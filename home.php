@@ -1,5 +1,5 @@
-<!DOCTYPE html>
 <?php
+session_start();
 require 'class/Autoloader.php';
 Autoloader::register();
 Database::getInstance();
@@ -68,6 +68,7 @@ if(isset($_POST['formconnexion']))
 
 
 ?>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset = "utf-8"/>

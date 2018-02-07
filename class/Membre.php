@@ -3,7 +3,7 @@
 class Membre //création de la classe membre
 {
 
-    private $id = 0;
+    private $id = null;
     private $pseudo;
     private $nom;
     private $prenom;

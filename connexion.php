@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+session_start();
 require 'class/Autoloader.php';
 Autoloader::register();
 
@@ -23,7 +24,10 @@ if(isset($_POST['forminscription']))
 		{
 			$manager = new MembreManager();
             $manager->add($membre);
-            session_start();
+			
+			var_dump($membre);
+			
+
 			var_dump($membre->getId());
             $_SESSION['sessionUserId'] = $membre->getId();
 
@@ -57,6 +61,7 @@ if(isset($_POST['annonce']))
 			$req->execute();
 			$categorie = $req->fetch();
 			
+			
 			var_dump($categorie);
 			
 			$objet=new Objet(array ('nom'=>$_POST['nom'], 'description'=>$_POST['desc'], 'etat'=>$_POST['etat'], 'prix'=>$_POST['prix'], 'cat'=>$_POST['choix']));
@@ -65,6 +70,8 @@ if(isset($_POST['annonce']))
 				{
 					$manager = new ObjetManager();
 					$manager->add($objet);
+					
+					var_dump($manager);
 					
 					$id = Membre::userId();
 					

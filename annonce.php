@@ -1,4 +1,5 @@
 <?php
+session_start();
 			if (!isset($choix))
 			{
 				$choix = "livre";
