@@ -57,7 +57,7 @@ if(isset($_GET['recherche']) AND !empty($_GET['recherche'])) {
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-COUCOU
+
             <a class="navbar-brand" href="home.php">Opeth</a>
 			<a class="navbar-brand" href="mon_compte.php">Mon compte</a>
 			<a class="navbar-brand" href="annonce.php">Mettre une annonce</a>
