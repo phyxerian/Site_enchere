@@ -89,17 +89,24 @@ echo Membre::userId();
 	<input type="submit" value="Valider">
 </form>
 
-<?php if($articles->rowCount() > 0) { ?>
-<ul>
-<?php while($resultat = $articles->fetch()) { ?>
-<li><?= $resultat['nom']?></li>
-<?php } ?>
-</ul>
-<?php }else {
-if(empty($_GET['recherche']))
-{}
-else{	?>
-Aucun résultat <?= $q ?>...
-<?php }} ?>
+<div align="center">
+	<?php if($articles->rowCount() > 0) { ?>
+	<!--<ul>-->
+	<?php while($resultat = $articles->fetch()) {
+	//$nom = Objet::recupNom($resultat['id_membre']);
+	?>
+	<a href="article.php"><?= $resultat['nom']?> <a><!--nom de l'article-->
+	<?php /*<p>vendeur : <?= $nom['pseudo']  ?></p>
+	<p>prix : <?= $resultat['prix'] //------------?> Euros<p>
+	<p>Date fin : <?= $resultat['datefin'] //------------?><p>
+	<?php*/ } ?>
+	<!--</ul>-->
+	<?php }else {
+	if(empty($_GET['recherche'])) //Si recherche est vide on affiche rien
+	{}
+	else{	?>
+	Aucun résultat pour <?= $q ?>... 
+	<?php }} ?>
+</div>
 </body>
 </html>

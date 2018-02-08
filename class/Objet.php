@@ -6,9 +6,10 @@ class Objet{
 	private $prix = null;
     private $etat = null;
 	private $cat = null;   //cle etrangère de la table categorie
+	private $idmembre;
    // private $prixDepart = null;
   //  private $dateDebut = null;
-  //  private $dateFin = null;
+    private $dateFin = null;
   //  private $erreurs = array();
 
     const NOM_INVALIDE = 1;
@@ -34,9 +35,9 @@ class Objet{
        /* if(isset($newObjet['prixDepart']))
             $this->setPrixdepart($newObjet['prixDepart']);
         if(isset($newObjet['dateDebut']))
-            $this->setDatedebut($newObjet['dateDebut']);
+            $this->setDatedebut($newObjet['dateDebut']);*/
         if(isset($newObjet['dateFin']))
-            $this->setDatefin($newObjet['dateFin']);*/
+            $this->setDatefin($newObjet['dateFin']);
     }
 
     //Setters
@@ -99,17 +100,17 @@ class Objet{
         else
             $this->erreurs[] = self::DATE_DEBUT_INVALIDE;
         return $this;
-    }
+    }*/
 
     public function setDatefin($df)
     {
         $df = trim($df);
         if(!empty($df))
-            $this->dateFin = $ddf;
+            $this->dateFin = $df;
         else
             $this->erreurs[] = self::DATE_FIN_INVALIDE;
         return $this;
-    }*/
+    }
 	
 	public function setPrix($prix)
 	{
@@ -150,12 +151,12 @@ class Objet{
     {
         return $this->dateDebut;
     }
-
+*/
     public function getDateFin()
     {
         return $this->dateFin;
     }
-*/
+
 	    public function getPrix()
     {
         return $this->prix;
@@ -163,8 +164,18 @@ class Objet{
 	
     public function isValid()
     {
-        return !empty($this->nom) && !empty($this->description) && !empty($this->etat) && !empty($this->prix) && !empty($this->cat) /*&& !empty($this->prixDepart) && !empty($this->dateDebut) && !empty($this->dateFin)*/;
+        return !empty($this->nom) && !empty($this->description) && !empty($this->etat) && !empty($this->prix) && !empty($this->cat) && !empty($this->dateFin) /*&& !empty($this->prixDepart) && !empty($this->dateDebut)*/ ;
     }
+	
+	public static function recupNom($idmembre)
+	{
+		$bdd= Database::getInstance();
+		$pseudoM = $bdd->prepare('SELECT pseudo FROM membres WHERE membres_id = "' .$idmembre.'" ');
+		$pseudoM->execute();
+		$data = $pseudoM->fetch();
+		$pseudoM->closeCursor();
+		return $data;
+	}
 
 }
 ?>

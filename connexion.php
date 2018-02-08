@@ -42,7 +42,7 @@ if(isset($_POST['forminscription']))
 }
 
 
-var_dump($_POST['nom']);var_dump($_POST['desc']);var_dump($_POST['prix']);var_dump($_POST['etat']);var_dump($_POST['choix']);
+var_dump($_POST['nom']);var_dump($_POST['desc']);var_dump($_POST['prix']);var_dump($_POST['etat']);var_dump($_POST['choix']);var_dump($_POST['df']);
 
 
 //création d'une annonce
@@ -52,32 +52,25 @@ if(isset($_POST['annonce']))
 
 		if(!empty($_POST['nom']) && !empty($_POST['desc']) && !empty($_POST['prix']) && !empty($_POST['etat']) && !empty($_POST['choix']))
 		{
-			echo'blablabla';
-			
-			var_dump($_POST['choix']);
-			
+			echo 'toto';
 			$bdd = Database::getInstance();			
 			$req= $bdd->prepare("SELECT id_cat FROM categorie WHERE id_cat = ". $_POST['choix']. "");
 			$req->execute();
 			$categorie = $req->fetch();
+
 			
-			
-			var_dump($categorie);
-			
-			$objet=new Objet(array ('nom'=>$_POST['nom'], 'description'=>$_POST['desc'], 'etat'=>$_POST['etat'], 'prix'=>$_POST['prix'], 'cat'=>$_POST['choix']));
-				var_dump($objet);
+			$objet=new Objet(array ('nom'=>$_POST['nom'], 'description'=>$_POST['desc'], 'etat'=>$_POST['etat'], 'prix'=>$_POST['prix'], 'cat'=>$_POST['choix'], 'dateFin'=>$_POST['df']));
+
 				if($objet->isValid())
 				{
+					echo'lala';
 					$manager = new ObjetManager();
 					$manager->add($objet);
-					
-					var_dump($manager);
-					
+
 					$id = Membre::userId();
-					
-					var_dump($id);
+
 			
-					//header('Location: succes.php'); //Redirection vers la page de succès d'enregistrement d'annonce.
+					header('Location: succes.php'); //Redirection vers la page de succès d'enregistrement d'annonce.
 				}
 			
 		}	

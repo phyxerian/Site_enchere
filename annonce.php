@@ -107,7 +107,23 @@ session_start();
 					<option value="14" <?php if($choix === "14"){ echo "selected"; }?> >Art et collection</option>						
 				</select> 
                 </td>
-            </tr>				
+            </tr>
+			<tr>
+				<td>
+					<label for="photo">Photo de l'article :</label>
+				</td>
+				<td>
+					<input type="file" name="photo" id="icone" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="datefin">Date de fin :</label>
+				</td>
+				<td>
+					<input type="date" id="df" name="df"/>
+				</td>
+			</tr>
                 <td>
                     </br></br>
                     <button type="submit" name="annonce" >Créer une annonce</button>
