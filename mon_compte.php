@@ -109,11 +109,11 @@ if(isset($_POST['mdp']))
 ?>
 </br>
 <label for="prenom">Entrer votre mot de passe : </label>
-<input placeholder="Ancien mot de passe" type="text" id="mdpactuel" name="mdpactuel" /></br>
+<input placeholder="Ancien mot de passe" type="password" id="mdpactuel" name="mdpactuel" /></br>
 <label for="prenom">Votre nouveau mot de passe : </label>
-<input placeholder="Nouveau mot de passe" type="text" id="newmdp" name="newmdp" /></br>
+<input placeholder="Nouveau mot de passe" type="password" id="newmdp" name="newmdp" /></br>
 <label for="prenom">Veuillez confirmer votre mot de passe : </label>
-<input placeholder="Nouveau mot de passe" type="text" id="newmdp1" name="newmdp1" /></br>
+<input placeholder="Nouveau mot de passe" type="password" id="newmdp1" name="newmdp1" /></br>
 <button type="submit" name="modmdp">Enregistrer les modifications</button><button type="submit" name="annuler">Annuler</button>
 <?php
 }
@@ -150,6 +150,19 @@ if(isset($_POST['mdp']))
 ?>
 			
 	</form>
+	</div>
+	<div>
+	<h1> Mon compte</h1>
+	</br>
+	<form action="connexion.php" method="post">
+	<p>Mes crédits : <?= $resultat['credit']?><p>
+	<label for="credit">Créditer votre compte : </label>	
+	<input placeholder="Ajouter des crédits" type="text" id="credit" name="credit" /></br>
+	<button type="submit" name="ajout">Ajouter</button>
+
+	
+	</form>
+	
 	</div>
 	<div> <!-- Mes annonces en cours -->
 	<h1> Mes annonces </h1>

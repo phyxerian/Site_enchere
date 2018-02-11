@@ -221,9 +221,10 @@ class Membre //création de la classe membre
 	
 	public static function changePass($newPass) //permet de changer le mdp
 	{
+		$id = SELF::userId();
 		$newPass=sha1($newPass);
 		$bdd = Database::getInstance();
-		$stmt = $bdd->prepare("UPDATE membres SET mot_de_passe = :newPass");
+		$stmt = $bdd->prepare("UPDATE membres SET mot_de_passe = :newPass WHERE membres_id=" .$id);
 		$stmt->bindValue(':newPass', $newPass,PDO::PARAM_STR);
 		$stmt->execute();
 		$stmt->closeCursor();
@@ -282,6 +283,24 @@ class Membre //création de la classe membre
 			}
 
 			$stmt->closeCursor();
+		}
+		
+		public static function addMoney($money) //ajoute des crédits 
+		{
+				$id = SELF::userId();
+				var_dump($id);
+				$bdd = Database::getInstance();
+				$stmt = $bdd->prepare('SELECT credit FROM membres WHERE membres_id =' .$id );
+				$stmt->execute();
+				$data = $stmt->fetch();
+				$stmt->closeCursor();
+				
+				$newValue = $data['credit'] + $money;
+				
+				$stmt1 = $bdd->prepare("UPDATE membres SET credit = :credit WHERE membres_id =" .$id);
+				$stmt1->bindValue(':credit', $newValue,PDO::PARAM_INT);
+				$stmt1->execute();
+				$stmt1->closeCursor();
 		}
 }
 ?>

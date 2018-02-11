@@ -189,14 +189,14 @@ class Objet{
 		$article->closeCursor();
 	}
 	
-	public static function idArt($idMembre)
+	public static function idArt($idMembre) 
 	{
 		$bdd = Database::getInstance();
 		$idArticle = $bdd->query("SELECT id_articles FROM articles WHERE id_membre =" . $idMembre ." ORDER BY id_articles DESC LIMIT 1");		
 		$id = $idArticle->fetch();
 		$idArticle->closeCursor();
 		return $id['id_articles'];
-		var_dump($id);
+
 	}
 	
 	public static function priceArt($idArt) //permet de récupérer le prix actuel d'un article

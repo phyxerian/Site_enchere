@@ -230,7 +230,7 @@ if(isset($_POST['annonce']))
 
 // Encherir
 
-if(isset($_POST['newprice'])) //Si on a cliquer sur le bouton
+if(isset($_POST['newprice'])) //Si on a cliqué sur le bouton
 {
 	if(isset($_POST['price'])) //et que l'on a rentré un prix
 	{
@@ -242,8 +242,7 @@ if(isset($_POST['newprice'])) //Si on a cliquer sur le bouton
 			if($_POST['price'] > $price) // Si le prix est supérieur au prix enregistré en bdd alors
 			{
 				Objet::validPrice($_POST['price'], $_POST['id']); //On met à jour le nouveau prix
-						var_dump($_POST['price']);
-						var_dump($_POST['id']);
+
 				header('Location: succes.php');//On retourne sur la page succès
 			}
 			else
@@ -258,6 +257,13 @@ if(isset($_POST['newprice'])) //Si on a cliquer sur le bouton
 	}
 }
 
+//Créditer compte
+
+if(isset($_POST['ajout'])) // Si on a cliqué sur créditer
+{
+	Membre::addMoney($_POST['credit']); // ajoute des crédits
+	header('Location: mon_compte.php');
+}
 
 ?>
 </body>
