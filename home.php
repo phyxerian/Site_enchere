@@ -114,7 +114,14 @@ Database::getInstance();
                     <input placeholder=" Votre Email" type="email" id="email" name="email" />  <!--- permet de vérifier que le texte rentré est bien sous forme ___@___.__ -->
                 </td>
             </tr>
-            <!--- Créer un mail2 pour vérifier qu'il n'y a pas d'erreur de saisie. -->
+            <tr>
+                <td>
+                    <label for="email1">Confirmation de votre Email : </label>
+                </td>
+                <td>
+                    <input placeholder=" Confirmer votre Email" type="email" id="email" name="email1" />  <!--- permet de vérifier que le texte rentré est bien sous forme ___@___.__ -->
+                </td>
+            </tr>			
             <tr>
                 <td>
                     <label for="mdp">Mot de passe : </label>
@@ -123,7 +130,14 @@ Database::getInstance();
                     <input placeholder=" Votre mot de passe" type="password" id= "mdp" name="mdp" />
                 </td>
             </tr>
-            <!--- Créer un mdp2 pour vérifier qu'il n'y a pas d'erreur de saisie. -->
+            <tr>
+                <td>
+                    <label for="mdp1">Confirmation du mot de passe : </label>
+                </td>
+                <td>
+                    <input placeholder=" Confirmez votre mot de passe" type="password" id= "mdp" name="mdp1" />
+                </td>
+            </tr>			
             <tr>
                 <td>
                     <label for="ddn">Date de naissance : </label> <!--- vente en ligne interdit aux mineurs -->

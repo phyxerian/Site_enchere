@@ -57,28 +57,96 @@ if(isset($_POST['formconnexion']))
 //partie inscription d'un membre
 
 if(isset($_POST['forminscription']))
-{
-    if(!empty($_POST['pseudo']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp']) && !empty($_POST['email']) && !empty($_POST['sexe']) && !empty($_POST['ddn'])) //permet de vérifier que tous les champs sont remplis
+{	
+	
+    if(!empty($_POST['pseudo']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp']) && !empty($_POST['mdp1']) && !empty($_POST['email']) && !empty($_POST['email1']) && !empty($_POST['sexe']) && !empty($_POST['ddn'])) //permet de vérifier que tous les champs sont remplis
     {
-        $membre = new Membre(array ('pseudo'=>$_POST['pseudo'], 'nom'=>$_POST['nom'], 'prenom'=>$_POST['prenom'], 'mdp'=>$_POST['mdp'], 'email'=>$_POST['email'], 'sexe'=>$_POST['sexe'], 'ddn'=>$_POST['ddn']));
-		if($membre->isValid()) // normalement, cette condition ne sera jamais fausse  grace au 2eme if qui vérifie si les cases ne sont pas vides.
-		{
-			$manager = new MembreManager();
-            $manager->add($membre);
+		$pseudo = htmlspecialchars($_POST['pseudo']);
+		$nom =  htmlspecialchars($_POST['nom']);
+		$prenom =  htmlspecialchars($_POST['prenom']);
+		
+		$pseudolenght = strlen($pseudo);
+			if($pseudolenght <=255)
+			{
+				$nomlenght = strlen($nom);
+				if($nomlenght <=255)
+				{	
+					$prenomlenght = strlen($prenom);
+					if($prenomlenght <=255)
+					{	
+						if(Membre::verifEmail($_POST['email']) === false) //unicité de l'email
+						{	
+							$emaillenght = strlen($_POST['email']);
+							if($emaillenght <=255)
+							{
+								$mdplenght = strlen($_POST['mdp']);
+								if($mdplenght <=255)
+								{	
+									if(Membre::verifPseudo($pseudo) === false) //unicité du pseudo
+									{	
+										if($_POST['email'] === $_POST['email1'])
+										{
+											if($_POST['mdp'] === $_POST['mdp1'])
+											{
+													$membre = new Membre(array ('pseudo'=>$_POST['pseudo'], 'nom'=>$_POST['nom'], 'prenom'=>$_POST['prenom'], 'mdp'=>$_POST['mdp'], 'email'=>$_POST['email'], 'sexe'=>$_POST['sexe'], 'ddn'=>$_POST['ddn']));
+													if($membre->isValid()) // normalement, cette condition ne sera jamais fausse  grace au 2eme if qui vérifie si les cases ne sont pas vides.
+													{
+														$manager = new MembreManager();
+														$manager->add($membre);
 			
-			var_dump($membre);
-			
+														$_SESSION['sessionUserId'] = $membre->getId();
 
-			var_dump($membre->getId());
-            $_SESSION['sessionUserId'] = $membre->getId();
-
-            header('Location: acceuil.php'); //Redirection vers la page acceuil si un nouveau compte à été créé.
-        }
-        else
-        {
-            echo "Tous les champs n'ont pas été remplis.";
-        }
-
+														header('Location: acceuil.php'); //Redirection vers la page acceuil si un nouveau compte à été créé.
+													}
+													else
+													{
+														echo "Tous les champs n'ont pas été remplis.";
+													}
+											}
+											else
+											{
+												echo'Les mots de passes ne sont pas identiques.';
+											}
+										}
+										else
+										{
+											echo 'Les emails ne sont pas identiques.';
+										}
+									}
+									else
+									{
+										echo 'Ce pseudonyme existe déjà.';
+									}
+								}
+								else
+								{
+									echo'Mot de passe supérieur à 255 caractères.';
+								}
+							}
+							else
+							{
+								echo'Email supérieur à 255 caractères.';
+							}
+						}					
+						else
+						{
+							echo'Email déjà pris.';
+						}
+					}
+					else
+					{
+						echo'prenom supérieur à 255 caractères.';
+					}
+				}
+				else
+				{
+					echo'nom supérieur à 255 caractères.';
+				}
+			}
+			else
+			{
+					echo'pseudo supérieur à 255 caractères.';
+			}
     }
 }
 
@@ -162,26 +230,30 @@ if(isset($_POST['annonce']))
 
 // Encherir
 
-if(isset($_POST['newprice']))
+if(isset($_POST['newprice'])) //Si on a cliquer sur le bouton
 {
-	if(isset($_POST['price']))
+	if(isset($_POST['price'])) //et que l'on a rentré un prix
 	{
-		$idM = Objet::vendeurArt($_POST['id']);
+		$idM = Objet::vendeurArt($_POST['id']); //On identifie le vendeur de l'article
 		
-		if($_SESSION['sessionUserId'] != $idM)
+		if($_SESSION['sessionUserId'] != $idM) //si le vendeur n'est pas l'enchérisseur alors
 		{
-			$price = Objet::priceArt($_POST['id']);
-			if($_POST['price'] > $price)
+			$price = Objet::priceArt($_POST['id']); //On récupère le prix en cours de l'article
+			if($_POST['price'] > $price) // Si le prix est supérieur au prix enregistré en bdd alors
 			{
-				Objet::validPrice($_POST['price'], $_POST['id']);
+				Objet::validPrice($_POST['price'], $_POST['id']); //On met à jour le nouveau prix
 						var_dump($_POST['price']);
-								var_dump($_POST['id']);
-				header('Location: succes.php');
+						var_dump($_POST['id']);
+				header('Location: succes.php');//On retourne sur la page succès
+			}
+			else
+			{
+				echo 'Le prix doit être supérieur à celui actuel.';
 			}
 		}
 		else
 		{
-			echo"Vous ne pouvez pas enchérir sur votre annonce.";
+			echo"Vous ne pouvez pas enchérir sur votre annonce."; 
 		}
 	}
 }

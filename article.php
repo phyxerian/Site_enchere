@@ -4,7 +4,7 @@ require 'class/Autoloader.php';
 Autoloader::register();
 
 $bdd = Database::getInstance();
-$articles= $bdd->query('SELECT prix, id_articles, etat, nom, id_membre, datefin, photo FROM articles WHERE id_articles = '. $_GET['var1'] .' ORDER BY id_articles DESC');
+$articles= $bdd->query('SELECT prix_en_cours, id_articles, etat, nom, id_membre, datefin, photo FROM articles WHERE id_articles = '. $_GET['var1'] .' ORDER BY id_articles DESC');
 
 ?>
 <!DOCTYPE html>
@@ -53,7 +53,7 @@ $articles= $bdd->query('SELECT prix, id_articles, etat, nom, id_membre, datefin,
 		<h2><?= $resultat['nom']?> </h2>
 		<p>vendeur : <?= $nom['pseudo']  ?></p>
 		<p>Etat : <?= $resultat['etat'] ?><p> 
-		<p>prix : <?= $resultat['prix'] ?> Euros <p>
+		<p>prix : <?= $resultat['prix_en_cours'] ?> Euros <p>
 		<input type="text" name="price" placeholder="Votre nouveau prix" /> <button type="submit" name="newprice" >Enchérir</button>
 		<input type="hidden" name="id" value="<?php echo "".$idArticle.""?>">
 		<p>Date fin : <?= $resultat['datefin'] ?><p> 

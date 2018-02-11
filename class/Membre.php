@@ -247,5 +247,41 @@ class Membre //création de la classe membre
 		}
 		
 	}
+	
+		public static function verifEmail($email) //vérifie si un email rentré correspond à un email en base de données.
+		{
+			$bdd = Database::getInstance();
+			$stmt = $bdd->query("SELECT email FROM membres");		
+			$data=$stmt->fetch(PDO::FETCH_ASSOC);
+ 
+			if($data['email'] === $email)
+			{
+				return true;
+			}
+			else
+			{
+				 return false;
+			}
+			
+			$stmt->closeCursor();
+		}
+		
+		public static function verifPseudo($pseudo) //vérifie si un pseudo rentré correspond à un pseudo en base de données.
+		{
+			$bdd = Database::getInstance();
+			$stmt = $bdd->query("SELECT pseudo FROM membres");		
+			$data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+			if($data['pseudo'] === $pseudo)
+			{
+				return true;
+			}
+			else
+			{
+				 return false;
+			}
+
+			$stmt->closeCursor();
+		}
 }
 ?>
