@@ -4,7 +4,7 @@ require 'class/Autoloader.php';
 Autoloader::register();
 
 $bdd = Database::getInstance();
-$articles= $bdd->query('SELECT prix, etat, nom, id_membre, datefin FROM articles ORDER BY id_articles DESC');
+$articles= $bdd->query('SELECT prix, id_articles, etat, nom, id_membre, datefin, photo FROM articles WHERE id_articles = '. $_GET['var1'] .' ORDER BY id_articles DESC');
 
 ?>
 <!DOCTYPE html>
@@ -31,6 +31,7 @@ $articles= $bdd->query('SELECT prix, etat, nom, id_membre, datefin FROM articles
         <div class="navbar-header">
 
             <a class="navbar-brand" href="#">opeth</a>
+			<a class="navbar-brand" href="acceuil.php">Acceuil</a>				
         </div>
     </div>
 </nav>
@@ -43,15 +44,22 @@ $articles= $bdd->query('SELECT prix, etat, nom, id_membre, datefin FROM articles
 	<div align="center">
 
 <?php
-	$resultat = $articles->fetch() ;
-	$nom = Objet::recupNom($resultat['id_membre']);
+
+	$resultat = $articles->fetch() ; //On récupère le tableau de la table article
+	$nom = Objet::recupNom($resultat['id_membre']); //On récupère le pseudo du vendeur	
+	$idArticle = ($resultat['id_articles']);
 ?>
-	<h2><?= $resultat['nom']?> </h2>
-	<p>vendeur : <?= $nom['pseudo']  ?></p>
-	<p>Etat : <?= $resultat['etat'] //------------?><p> 
-	<p>prix : <?= $resultat['prix'] //------------?> Euros <button type="submit" name="annonce" >Enchérir</button> <p> 
-	<p>Date fin : <?= $resultat['datefin'] //------------?><p> 
-	
+	<form action="connexion.php" method="post">
+		<h2><?= $resultat['nom']?> </h2>
+		<p>vendeur : <?= $nom['pseudo']  ?></p>
+		<p>Etat : <?= $resultat['etat'] ?><p> 
+		<p>prix : <?= $resultat['prix'] ?> Euros <p>
+		<input type="text" name="price" placeholder="Votre nouveau prix" /> <button type="submit" name="newprice" >Enchérir</button>
+		<input type="hidden" name="id" value="<?php echo "".$idArticle.""?>">
+		<p>Date fin : <?= $resultat['datefin'] ?><p> 
+		<img src="article/photo/<?php echo $resultat['photo']?>" width="150">
+	</form>	
+
 </div>
 
 	<a href="acceuil.php"> retour <a>

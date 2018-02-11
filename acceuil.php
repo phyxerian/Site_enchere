@@ -25,15 +25,16 @@ if(isset($_POST['supprimer_sess']))
 }
 
 // Barre de recherche
-$bdd = Database::getInstance();
-$articles= $bdd->query('SELECT nom FROM articles ORDER BY id_articles DESC');
+/*$bdd = Database::getInstance();
+$articles= $bdd->prepare('SELECT id_articles, nom FROM articles ORDER BY id_articles DESC');
+$articles->execute();*/
 
 
-if(isset($_GET['recherche']) AND !empty($_GET['recherche'])) {
+if(isset($_GET['recherche']) AND !empty($_GET['recherche']) ) { //Si une recherche à été effectuer, on regarde si on a des résultats en bdd
 	
 	$bdd = Database::getInstance();
 	$q = htmlspecialchars($_GET['recherche']);
-	$articles = $bdd->query('SELECT nom FROM articles WHERE nom LIKE "%'.$q.'%" ORDER BY id_articles DESC');
+	$articles = $bdd->query('SELECT id_articles, nom, photo FROM articles WHERE nom LIKE "%'.$q.'%" ORDER BY id_articles DESC');
 }
 
 ?>
@@ -76,7 +77,7 @@ if(isset($_GET['recherche']) AND !empty($_GET['recherche'])) {
 </div><!-- /.container -->
 
 <h1> Bonjour <?php 
-echo Membre::userId();
+echo Membre::userIdPseudo();
  ?> </h1>
 <div align="right">
 <form action="acceuil.php" method="post"> <!-- bouton déconnexion -->
@@ -90,23 +91,36 @@ echo Membre::userId();
 </form>
 
 <div align="center">
-	<?php if($articles->rowCount() > 0) { ?>
-	<!--<ul>-->
-	<?php while($resultat = $articles->fetch()) {
-	//$nom = Objet::recupNom($resultat['id_membre']);
-	?>
-	<a href="article.php"><?= $resultat['nom']?> <a><!--nom de l'article-->
-	<?php /*<p>vendeur : <?= $nom['pseudo']  ?></p>
-	<p>prix : <?= $resultat['prix'] //------------?> Euros<p>
-	<p>Date fin : <?= $resultat['datefin'] //------------?><p>
-	<?php*/ } ?>
-	<!--</ul>-->
-	<?php }else {
-	if(empty($_GET['recherche'])) //Si recherche est vide on affiche rien
-	{}
-	else{	?>
-	Aucun résultat pour <?= $q ?>... 
-	<?php }} ?>
+	<?php
+
+	if(!empty($_GET['recherche']))
+	{
+?>
+	<?php if($articles->rowCount() > 0)		// Retourne le nombre de lignes affectées par le dernier appel à la fonction PDOStatement::execute()
+		{?> 
+ 
+		<?php while($resultat = $articles->fetch())  // On affiche le ou les résultats de la requête
+			{
+				$value=$resultat['id_articles']; //On récupère l'id article pour la transmettre dans l'url?>
+				
+				<h2><a href="<?php echo "article.php?var1=".$value."" ?>"><?= $resultat['nom']?></a></h2></br> <!-- On récupère l'id de l'article et on le transmet à la page article -->
+				<img src="article/photo/<?php echo $resultat['photo']?>" width="150">
+<?php 
+			}
+		}
+		
+		else
+		{
+		?> Aucun résultat pour <?=$q ?>... <?php			
+		}
+	}	
+	else 
+	{
+		if(empty($_GET['recherche'])) //Si recherche est vide on affiche rien
+		{
+
+		}	
+	} ?>
 </div>
 </body>
 </html>

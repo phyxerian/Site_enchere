@@ -6,10 +6,11 @@ class Objet{
 	private $prix = null;
     private $etat = null;
 	private $cat = null;   //cle etrangère de la table categorie
-	private $idmembre;
+	private $idMembre;
    // private $prixDepart = null;
   //  private $dateDebut = null;
     private $dateFin = null;
+	private $idArt = null;
   //  private $erreurs = array();
 
     const NOM_INVALIDE = 1;
@@ -167,15 +168,65 @@ class Objet{
         return !empty($this->nom) && !empty($this->description) && !empty($this->etat) && !empty($this->prix) && !empty($this->cat) && !empty($this->dateFin) /*&& !empty($this->prixDepart) && !empty($this->dateDebut)*/ ;
     }
 	
-	public static function recupNom($idmembre)
+	public static function recupNom($idMembre)
 	{
 		$bdd= Database::getInstance();
-		$pseudoM = $bdd->prepare('SELECT pseudo FROM membres WHERE membres_id = "' .$idmembre.'" ');
+		$pseudoM = $bdd->prepare('SELECT pseudo FROM membres WHERE membres_id = "' .$idMembre.'" ');
 		$pseudoM->execute();
 		$data = $pseudoM->fetch();
 		$pseudoM->closeCursor();
 		return $data;
 	}
 
+	public static function myArticle() //permet de récupérer les noms des articles vendu par un membre
+	{
+		$bdd = Database::getInstance();
+		$article = $bdd->query("SELECT nom FROM articles WHERE id_membre =" . $_SESSION['sessionUserId']);
+		while($data = $article->fetch())
+		{
+		echo $data['nom'];?></br><?php
+		}
+		$article->closeCursor();
+	}
+	
+	public static function idArt($idMembre)
+	{
+		$bdd = Database::getInstance();
+		$idArticle = $bdd->query("SELECT id_articles FROM articles WHERE id_membre =" . $idMembre ." ORDER BY id_articles DESC LIMIT 1");		
+		$id = $idArticle->fetch();
+		$idArticle->closeCursor();
+		return $id['id_articles'];
+		var_dump($id);
+	}
+	
+	public static function priceArt($idArt) //permet de récupérer le prix actuel d'un article
+	{
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("SELECT prix_en_cours FROM articles WHERE id_articles =".$idArt);
+		$data = $stmt->fetch();
+		$stmt->closeCursor();
+		return $data;
+		
+	}
+	
+	public static function vendeurArt($idArt) //retourne le vendeur par rapport à l'id de l'article
+	{
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("SELECT id_membre FROM articles WHERE id_articles =".$idArt);
+		$stmt->execute();
+		$data = $stmt->fetch();
+		$stmt->closeCursor();
+		return $data;
+		var_dump($data);
+	}
+	
+	public static function validPrice($newPrice, $idArt) //Met à jour le prix
+	{
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("UPDATE articles SET prix_en_cours = :newPrice WHERE id_articles =" .$idArt);
+		$stmt->bindValue(':newPrice', $newPrice,PDO::PARAM_INT);
+		$stmt->execute();
+		$stmt->closeCursor();
+	}
 }
 ?>

@@ -4,69 +4,6 @@ require 'class/Autoloader.php';
 Autoloader::register();
 Database::getInstance();
 
-/*
-$prenom = htmlspecialchars($_POST['prenom']);
-$nom = htmlspecialchars($_POST['nom']);
-$email = htmlspecialchars($_POST['email']);
-$mdp = sha1($_POST['nom']);
-
-$prenomlength = strlen($prenom);
-
-if($pseudolength <=255)
-{
-
-}
-else
-{
-$erreur = "Votre pseudo ne doit pas dépasser 255 caractères.";
-}
-$nomlength = strlen($nom);
-$prenomlength = strlen($prenom);
-*/
-
-//PARTIE CONNEXION
-
-if(isset($_POST['formconnexion']))
-{
-
-    if (!empty($_POST['login']) && !empty($_POST['mdpco']))
-    {
-			$pass_hache = sha1($_POST['mdpco']); //hachage du mdp pour le retrouver dans la bdd
-		
-			$bdd = Database::getInstance(); // Obtention de l'instance de base de données
-			$reponse = $bdd->prepare('SELECT email FROM membres WHERE email = "' . $_POST['login'] . '" '); // On vérifie que le post mail existe dans la bdd
-			$reponse->execute();
-            $mail = $reponse->fetch();
-             
-            $reponse1 = $bdd->prepare('SELECT mot_de_passe FROM membres WHERE mot_de_passe = "' . $pass_hache . '" '); //On vérifie que le mdp existe dans la bdd
-			$reponse1->execute();
-            $mdpco = $reponse1->fetch();
-			
-			echo 'lol';?></br></br></br></br><?php
-
-			var_dump($_POST['mdpco']);
-			var_dump($pass_hache);
-			var_dump($mdpco);
-
-			if($_POST['login'] == $mail['email'] && $pass_hache == $mdpco['mot_de_passe'] ) //Si le mail (qui est forcément unique) et le mdp correspondent on se co et on créer une session
-			{
-				
-			$stet = $bdd->prepare('SELECT membres_id FROM membres WHERE email = "' . $_POST['login'] . '" '); //On récupère l'id
-			$stet->execute();
-            $id = $stet->fetch();
-				session_start();
-				$_SESSION['sessionUserId'] = $id['membres_id']; //La session Id à pour valeur l'id du membre
-				header ('Location: acceuil.php');
-			}
-			else{
-				echo' nooooooooooooooooooooooooooooooooooooooooooooooooooooooooooon'; //redirection page d'erreur
-			}
-
-    }
-}
-
-
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -114,7 +51,7 @@ if(isset($_POST['formconnexion']))
 
     <h2>Veuillez-vous identifiez</br> </h2>
 
-    <form action="home.php" method="post">
+    <form action="connexion.php" method="post">
         <table>
             <tr>
                 <td>

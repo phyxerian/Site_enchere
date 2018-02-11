@@ -11,6 +11,7 @@ class Membre //création de la classe membre
     private $email;
     private $sexe;
     private $ddn;
+	private $userPass; //vérifie que le mdp correspond
     private $erreurs = array();
 
     const NOM_INVALIDE = 1;
@@ -165,17 +166,86 @@ class Membre //création de la classe membre
 
 	//function
 	
-    public function isValid()
+    public function isValid() //vérifie que tous les champs sont remplie
     {
         return !empty($this->nom) && !empty($this->prenom) && !empty($this->mdp) && !empty($this->email) && !empty($this->sexe) && !empty($this->ddn);
     }
 	
-	public static function userId(){
+	public static function userId(){ //permet de récupérer l'id
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("SELECT * FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
+		$stmt->execute();
+		$data = $stmt->fetch();
+		return $data['membres_id'];
+	}
+
+
+	public static function userIdPseudo(){ //permet de récupérer l'id d'un membre et de retourner son pseudo
 		$bdd = Database::getInstance();
 		$stmt = $bdd->prepare("SELECT * FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
 		$stmt->execute();
 		$data = $stmt->fetch();
 		return $data['pseudo'];
+	}
+	
+	public static function deleteMembre() //supprime un membre de la bdd
+	{
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("DELETE FROM membres WHERE membres_id =". $_SESSION['sessionUserId']);
+		var_dump($_SESSION['sessionUserId']);
+		$stmt->execute();
+		var_dump($stmt);
+		$stmt->closeCursor();
+		var_dump($stmt);
+	}
+	
+	public static function userPass($userPass) //Permet de vérifier que le mot de passe rentré correspond à celui de la bdd
+	{
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("SELECT mot_de_passe FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
+		$stmt->execute();
+		$data = $stmt->fetch();
+		$stmt->closeCursor();
+		
+		$userPass = sha1($userPass);
+		
+		if ($data['mot_de_passe'] === $userPass)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public static function changePass($newPass) //permet de changer le mdp
+	{
+		$newPass=sha1($newPass);
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("UPDATE membres SET mot_de_passe = :newPass");
+		$stmt->bindValue(':newPass', $newPass,PDO::PARAM_STR);
+		$stmt->execute();
+		$stmt->closeCursor();
+	}
+	
+	public static function article() //Si un membre à des articles en ventes
+	{
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("SELECT id_membre FROM articles WHERE id_membre =" . $_SESSION['sessionUserId']);		
+		$stmt->execute();
+		$data = $stmt->fetch();
+		$stmt->closeCursor();
+		
+		if($data > 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
 	}
 }
 ?>

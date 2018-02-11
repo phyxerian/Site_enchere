@@ -30,6 +30,7 @@ session_start();
         <div class="navbar-header">
 
             <a class="navbar-brand" href="#">Opeth</a>
+			<a class="navbar-brand" href="acceuil.php">Acceuil</a>				
         </div>
     </div>
 </nav>
@@ -46,7 +47,7 @@ session_start();
 
 <h1> Créer une annonce</h1>
 
-    <form action="connexion.php" method="post">
+    <form action="connexion.php" method="post" enctype="multipart/form-data"> <!-- enctype, gère l'upload de fichier -->
         <table> <!--- On utilise le tableau et non le br pour que tous les input soient bien alignés. -->
            <tr>
 			<tr>
