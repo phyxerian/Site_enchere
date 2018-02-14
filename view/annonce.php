@@ -2,8 +2,7 @@
 session_start();
 			if (!isset($choix))
 			{
-				$choix = "livre";
-				
+				$choix = "livre";				
 			}
 ?>
 
@@ -38,16 +37,13 @@ session_start();
 <div class="container">
 
     <div class="starter-template" style="padding-top: 100px;">
-
-
     </div>
-
 
 </div><!-- /.container -->
 
 <h1> Créer une annonce</h1>
 
-    <form action="connexion.php" method="post" enctype="multipart/form-data"> <!-- enctype, gère l'upload de fichier -->
+    <form action="../controller/connexion.php" method="post" enctype="multipart/form-data"> <!-- enctype, gère l'upload de fichier -->
         <table> <!--- On utilise le tableau et non le br pour que tous les input soient bien alignés. -->
            <tr>
 			<tr>

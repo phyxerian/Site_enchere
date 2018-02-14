@@ -1,17 +1,8 @@
-<!DOCTYPE html>
 <?php
 session_start();
-require 'class/Autoloader.php';
+require '../modele/class/Autoloader.php';
 Autoloader::register();
 
-?>
-<html>
-<head>
-    <meta charset = "utf-8"/>
-    <title>requête base de données </title>
-</head>
-<body>
-<?php
 
 //PARTIE CONNEXION
 
@@ -30,12 +21,6 @@ if(isset($_POST['formconnexion']))
             $reponse1 = $bdd->prepare('SELECT mot_de_passe FROM membres WHERE mot_de_passe = "' . $pass_hache . '" '); //On vérifie que le mdp existe dans la bdd
 			$reponse1->execute();
             $mdpco = $reponse1->fetch();
-			
-			echo 'lol';?></br></br></br></br><?php
-
-			var_dump($_POST['mdpco']);
-			var_dump($pass_hache);
-			var_dump($mdpco);
 
 			if($_POST['login'] == $mail['email'] && $pass_hache == $mdpco['mot_de_passe'] ) //Si le mail (qui est forcément unique) et le mdp correspondent on se co et on créer une session
 			{
@@ -45,7 +30,7 @@ if(isset($_POST['formconnexion']))
             $id = $stet->fetch();
 				session_start();
 				$_SESSION['sessionUserId'] = $id['membres_id']; //La session Id à pour valeur l'id du membre
-				header ('Location: acceuil.php');
+				header ('Location: ../view/acceuil.php');
 			}
 			else{
 				echo' nooooooooooooooooooooooooooooooooooooooooooooooooooooooooooon'; //redirection page d'erreur
@@ -79,49 +64,62 @@ if(isset($_POST['forminscription']))
 							$emaillenght = strlen($_POST['email']);
 							if($emaillenght <=255)
 							{
-								$mdplenght = strlen($_POST['mdp']);
-								if($mdplenght <=255)
-								{	
-									if(Membre::verifPseudo($pseudo) === false) //unicité du pseudo
-									{	
-										if($_POST['email'] === $_POST['email1'])
+									$fuseau = new DateTimeZone('Europe/Paris'); //fuseau
+									$today = new DateTime($time = "now", $fuseau); //aujourd'hui
+									$date_18 = $today->sub(new DateInterval('P18Y')); //date - 18 ans
+									$ddn = DateTime::createFromFormat('Y-m-d', $_POST['ddn']);
+									
+										if($ddn  <= $date_18)
 										{
-											if($_POST['mdp'] === $_POST['mdp1'])
-											{
-													$membre = new Membre(array ('pseudo'=>$_POST['pseudo'], 'nom'=>$_POST['nom'], 'prenom'=>$_POST['prenom'], 'mdp'=>$_POST['mdp'], 'email'=>$_POST['email'], 'sexe'=>$_POST['sexe'], 'ddn'=>$_POST['ddn']));
-													if($membre->isValid()) // normalement, cette condition ne sera jamais fausse  grace au 2eme if qui vérifie si les cases ne sont pas vides.
+	
+											$mdplenght = strlen($_POST['mdp']);
+											if($mdplenght <=255)
+											{	
+												if(Membre::verifPseudo($pseudo) === false) //unicité du pseudo
+												{	
+													if($_POST['email'] === $_POST['email1'])
 													{
-														$manager = new MembreManager();
-														$manager->add($membre);
+														if($_POST['mdp'] === $_POST['mdp1'])
+														{
+																$membre = new Membre(array ('pseudo'=>$_POST['pseudo'], 'nom'=>$_POST['nom'], 'prenom'=>$_POST['prenom'], 'mdp'=>$_POST['mdp'], 'email'=>$_POST['email'], 'sexe'=>$_POST['sexe'], 'ddn'=>$_POST['ddn']));
+																if($membre->isValid()) // normalement, cette condition ne sera jamais fausse  grace au 2eme if qui vérifie si les cases ne sont pas vides.
+																{
+																	$manager = new MembreManager();
+																	$manager->add($membre);
 			
-														$_SESSION['sessionUserId'] = $membre->getId();
+																	$_SESSION['sessionUserId'] = $membre->getId();
 
-														header('Location: acceuil.php'); //Redirection vers la page acceuil si un nouveau compte à été créé.
+																	header('Location: ../view/acceuil.php'); //Redirection vers la page acceuil si un nouveau compte à été créé.
+																}
+																else
+																{
+																	echo "Tous les champs n'ont pas été remplis.";
+																}
+														}
+														else
+														{
+															echo'Les mots de passes ne sont pas identiques.';
+														}
 													}
 													else
 													{
-														echo "Tous les champs n'ont pas été remplis.";
+														echo 'Les emails ne sont pas identiques.';
 													}
+												}
+												else
+												{
+													echo 'Ce pseudonyme existe déjà.';
+												}
 											}
 											else
 											{
-												echo'Les mots de passes ne sont pas identiques.';
+												echo'Mot de passe supérieur à 255 caractères.';
 											}
 										}
 										else
 										{
-											echo 'Les emails ne sont pas identiques.';
+											echo "Il faut avoir plus de 18 ans pour s'inscrire sur un site de vente aux enchères.";	
 										}
-									}
-									else
-									{
-										echo 'Ce pseudonyme existe déjà.';
-									}
-								}
-								else
-								{
-									echo'Mot de passe supérieur à 255 caractères.';
-								}
 							}
 							else
 							{
@@ -154,6 +152,7 @@ if(isset($_POST['forminscription']))
 //var_dump($_POST['nom']);var_dump($_POST['desc']);var_dump($_POST['prix']);var_dump($_POST['etat']);var_dump($_POST['choix']);var_dump($_POST['df']); //df = datefin
 
 
+
 //création d'une annonce
 
 if(isset($_POST['annonce']))
@@ -161,7 +160,7 @@ if(isset($_POST['annonce']))
 
 		if(!empty($_POST['nom']) && !empty($_POST['desc']) && !empty($_POST['prix']) && !empty($_POST['etat']) && !empty($_POST['choix']))
 		{
-			echo 'toto';
+
 			$bdd = Database::getInstance();			
 			$req= $bdd->prepare("SELECT id_cat FROM categorie WHERE id_cat = ". $_POST['choix']. "");
 			$req->execute();
@@ -172,35 +171,28 @@ if(isset($_POST['annonce']))
 
 				if($objet->isValid())
 				{
-					echo'lala';
+
 					$manager = new ObjetManager();
 					$manager->add($objet);
-					var_dump($objet);
-					$idM = Membre::userId();
-					var_dump($idM);					
+					$idM = Membre::userId();				
 					$idA = Objet::idArt($idM); //id de l'article
 					
-					var_dump($idA);
 					
 					$tailleMax = 2097152; // 2 mégaoctets, on le passe par variable pour éviter d'avoir un chiffre dans le if dont on oublirait la signification
 					$extensionsValides = array('jpg','jpeg','gif','png');
-					var_dump($tailleMax);
-					var_dump($extensionsValides);
-					var_dump($_FILES['photo']['name']);
 					
 					if($_FILES['photo']['size'] <= $tailleMax)
 					{
-						echo'test';
+
 						$extensionUpload = strtolower(substr(strrchr($_FILES['photo']['name'], '.'), 1));
 						if(in_array($extensionUpload, $extensionsValides))
 						{
-							echo 'coucou';
-							$path = "article/photo/".$idA.".".$extensionUpload;
+
+							$path = "../public/article/photo/".$idA.".".$extensionUpload;
 							$resultat = move_uploaded_file($_FILES['photo']['tmp_name'], $path);
 							if($resultat) //si le déplacement c'est bien effectuer
 							{
-													var_dump($idA);
-								echo'lol';
+
 								$photo = $bdd->prepare("UPDATE articles SET photo = :photo WHERE id_articles = :id" );
 								$photo->execute(array(
 								'photo' => $idA.".".$extensionUpload,
@@ -223,10 +215,34 @@ if(isset($_POST['annonce']))
 					echo"Votre photo d'article ne doit pas dépasser 2 Mégaoctets.";
 					}
 					
-					header('Location: succes.php'); //Redirection vers la page de succès d'enregistrement d'annonce.
+					header('Location: ../view/succes.php'); //Redirection vers la page de succès d'enregistrement d'annonce.
 				}			
 		}		
 }
+
+
+//Déconnexion d'une session
+
+if(isset($_POST['supprimer_sess']))
+{
+
+    $_SESSION[] = array();
+
+    if (ini_get("session.use_cookies")) // détruit les variables de cookies
+    {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
+
+    session_destroy();
+    header ('Location: ../index.php');
+	
+}
+
+
 
 // Encherir
 
@@ -243,7 +259,7 @@ if(isset($_POST['newprice'])) //Si on a cliqué sur le bouton
 			{
 				Objet::validPrice($_POST['price'], $_POST['id']); //On met à jour le nouveau prix
 
-				header('Location: succes.php');//On retourne sur la page succès
+				header('Location: ../view/succes.php');//On retourne sur la page succès
 			}
 			else
 			{
@@ -262,11 +278,71 @@ if(isset($_POST['newprice'])) //Si on a cliqué sur le bouton
 if(isset($_POST['ajout'])) // Si on a cliqué sur créditer
 {
 	Membre::addMoney($_POST['credit']); // ajoute des crédits
-	header('Location: mon_compte.php');
+	header('Location: ../view/mon_compte.php');
 }
 
+
+//Barre de recherche
+
+$urlPhoto = "../public/article/photo/";
+$urlArticle = "article.php?var1=";
+ 
+  header("Content-Type: text/plain");
+  
+  if (isset($_POST['champRecherche'])) { 
+  
+    if (is_string($_POST["champRecherche"])){ 
+      $LibelleRecherche = stripslashes(htmlentities($_POST["champRecherche"])); 
+
+	  if (empty($LibelleRecherche) == false) 
+	    { 
+			
+			$bdd = Database::getInstance();
+			$reqres = $bdd->query("SELECT id_articles, nom, photo FROM articles WHERE nom LIKE '".$LibelleRecherche."%' ORDER BY nom");
+			
+			while ($row = $reqres->fetch()){ 
+			
+				$value = $row['id_articles'];
+				echo "<h2><a href='". $urlArticle. "" . $value . "'>". $row["nom"]."</h2></a><br/>";
+				echo "<img src=". $urlPhoto .$row['photo']." width='150'></br>";		
+
+					} 
+			$reqres->closeCursor();		
+		} 
+		else 
+		{ 
+			echo "";
+		} 
+	} 
+	else { 
+      echo ""; 
+		} 
+} 
+else
+{ 
+	echo "";
+}
+
+
+//Suppression compte
+
+	if(isset($_POST['suppcompte']))
+	{
+		echo 'coucou';
+		if(Membre::article() === false)
+		{
+			echo 'test';
+		Membre::deleteMembre();
+		header('Location: ../view/home.php'); 
+		}
+		else
+		{
+			echo"Vous ne pouvez pas supprimer votre compte tant qu'il reste des articles en vente.";
+		}
+	}
+
+
 ?>
-</body>
-</html>
+
 
 

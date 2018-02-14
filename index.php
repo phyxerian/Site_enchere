@@ -1,17 +1,16 @@
-
 <?php
-require 'class/Autoloader.php';
+require 'modele/class/Autoloader.php';
 Autoloader::register();
 		session_start();
 
 
 if (!isset($_SESSION['sessionUserId']))
 {
-    header('Location: home.php');
+    header('Location: view/home.php');
 }
 else
 {
-    header('Location: acceuil.php');
+    header('Location: view/acceuil.php');
 }
 
 

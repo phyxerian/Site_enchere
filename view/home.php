@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'class/Autoloader.php';
+require '../modele/class/Autoloader.php';
 Autoloader::register();
 Database::getInstance();
 
@@ -51,7 +51,7 @@ Database::getInstance();
 
     <h2>Veuillez-vous identifiez</br> </h2>
 
-    <form action="connexion.php" method="post">
+    <form action="../controller/connexion.php" method="post">
         <table>
             <tr>
                 <td>
@@ -80,7 +80,7 @@ Database::getInstance();
 
     <h2>Créer un compte </h2>
 
-    <form action="connexion.php" method="post">
+    <form action="../controller/connexion.php" method="post">
         <table> <!--- On utilise le tableau et non le br pour que tous les input soient bien alignés. -->
             <tr>
                 <td>

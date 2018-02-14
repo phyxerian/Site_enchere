@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'class/Autoloader.php';
+require '../class/Autoloader.php';
 Autoloader::register();
 
 $bdd = Database::getInstance();
@@ -49,7 +49,7 @@ $articles= $bdd->query('SELECT prix_en_cours, id_articles, etat, nom, id_membre,
 	$nom = Objet::recupNom($resultat['id_membre']); //On récupère le pseudo du vendeur	
 	$idArticle = ($resultat['id_articles']);
 ?>
-	<form action="connexion.php" method="post">
+	<form action="controller/connexion.php" method="post">
 		<h2><?= $resultat['nom']?> </h2>
 		<p>vendeur : <?= $nom['pseudo']  ?></p>
 		<p>Etat : <?= $resultat['etat'] ?><p> 
@@ -57,7 +57,7 @@ $articles= $bdd->query('SELECT prix_en_cours, id_articles, etat, nom, id_membre,
 		<input type="text" name="price" placeholder="Votre nouveau prix" /> <button type="submit" name="newprice" >Enchérir</button>
 		<input type="hidden" name="id" value="<?php echo "".$idArticle.""?>">
 		<p>Date fin : <?= $resultat['datefin'] ?><p> 
-		<img src="article/photo/<?php echo $resultat['photo']?>" width="150">
+		<img src="public/article/photo/<?php echo $resultat['photo']?>" width="150">
 	</form>	
 
 </div>

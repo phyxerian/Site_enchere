@@ -1,4 +1,4 @@
-<?php require 'class/Autoloader.php';
+<?php require '../modele/class/Autoloader.php';
 Autoloader::register();
 session_start(); // à évoluer
 
@@ -27,59 +27,30 @@ $membres= $bdd->query('SELECT * FROM membres WHERE membres_id ="'.$_SESSION['ses
     <div class="container">
         <div class="navbar-header">
 
-            <a class="navbar-brand" href="#">opeth</a>
+            <a class="navbar-brand" href="home.php">Opeth</a>
 			<a class="navbar-brand" href="acceuil.php">Acceuil</a>			
         </div>
     </div>
 </nav>
 <div class="container">
     <div class="starter-template" style="padding-top: 100px;">
-
-
     </div>
 
 	<h1>Mes infos </h1>
-	<div align="right">
-	<form action='mon_compte.php' method="post">
+	<div id="div_mesInfos" align="right">
+	<form action="../controller/connexion.php" method="post">
 		<table>
 			<tr>
 				<td>
-					<button type="submit" name="suppcompte"> Supprimer votre compte </button>
+					<button type="submit" name="suppcompte" > Supprimer votre compte </button>
 				</td>
 			</tr>
 		</table>
-
+	</form>	
 	</div>
 	<div>
-<div align="right">	
-<?php 
-if(isset($_POST['suppcompte'])) //Si on a cliqué sur le bouton supprimeer votre compte
-{?>
-			<p>Etes vous sûr ?<p>
-			<button type="submit" name="oui"> Oui </button>	<button type="submit" name="non"> Non </button>	
-<?php
-}	
 
-	if(isset($_POST['oui']))
-	{
-		if(Membre::article() === false)
-		{
-		Membre::deleteMembre();
-		header('Location: home.php'); 
-		}
-		else
-		{
-			echo"Vous ne pouvez pas supprimer votre compte tant qu'il reste des articles en vente.";
-		}
-	}
-	if(isset($_POST['non']))
-	{
-		header('Location: mon_compte.php'); 
-	}
 
-?>
-</div>	
-</form>	
 	<form action="mon_compte.php" method="post">
 <?php 	
 $resultat = $membres->fetch();
@@ -154,7 +125,7 @@ if(isset($_POST['mdp']))
 	<div>
 	<h1> Mon compte</h1>
 	</br>
-	<form action="connexion.php" method="post">
+	<form action="../controller/connexion.php" method="post">
 	<p>Mes crédits : <?= $resultat['credit']?><p>
 	<label for="credit">Créditer votre compte : </label>	
 	<input placeholder="Ajouter des crédits" type="text" id="credit" name="credit" /></br>
@@ -167,9 +138,7 @@ if(isset($_POST['mdp']))
 	<div> <!-- Mes annonces en cours -->
 	<h1> Mes annonces </h1>
 <?php 
-
 	echo Objet::myArticle();
-
 ?>	
 	</div>
 	
