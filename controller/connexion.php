@@ -25,12 +25,26 @@ if(isset($_POST['formconnexion']))
 			if($_POST['login'] == $mail['email'] && $pass_hache == $mdpco['mot_de_passe'] ) //Si le mail (qui est forcément unique) et le mdp correspondent on se co et on créer une session
 			{
 				
-			$stet = $bdd->prepare('SELECT membres_id FROM membres WHERE email = "' . $_POST['login'] . '" '); //On récupère l'id
-			$stet->execute();
-            $id = $stet->fetch();
+				$stet = $bdd->prepare('SELECT membres_id FROM membres WHERE email = "' . $_POST['login'] . '" '); //On récupère l'id
+				$stet->execute();
+				$id = $stet->fetch();
+				
 				session_start();
 				$_SESSION['sessionUserId'] = $id['membres_id']; //La session Id à pour valeur l'id du membre
+				
+				$idAdmin= Admin::coAdmin($_SESSION['sessionUserId']);
+				
+				var_dump($idAdmin);
+				var_dump($_SESSION['sessionUserId']);
+				
+				if($idAdmin === true)
+				{
+				header ('Location: ../view/admin.php');
+		
+				}
+				else{
 				header ('Location: ../view/acceuil.php');
+				}
 			}
 			else{
 				echo' nooooooooooooooooooooooooooooooooooooooooooooooooooooooooooon'; //redirection page d'erreur
@@ -341,7 +355,47 @@ else
 		}
 	}
 
+	//Voir Catégorie
+	
+	if(isset($_POST['voirCat']))
+	{
+		Admin::viewCat();
+	}
 
+	
+	//Modification mot de passe Membre
+	
+	if(isset($_POST['modmdp'])) //Vérification qu'on a cliqué sur le boutton
+	{
+
+		if(!empty($_POST['mdpactuel']) && !empty($_POST['newmdp']) && !empty($_POST['newmdp1'])) //Si les champs ne sont pas vides
+		{
+			$rep=Membre::userPass($_POST['mdpactuel']); //appel de la fonction qui permet de vérifier que le mot de passe écrit correspond à celui en bdd
+
+			if($rep === true) //Si c'est vraie
+			{
+			
+					if($_POST['newmdp'] === $_POST['newmdp1']) //et que les deux mdp sont identiques
+					{
+
+					$newmdp = Membre::changePass($_POST['newmdp']); //function pour changer le mdp en bdd
+					//echo "Le mot de passe à été changé.";
+					header('Location: ../view/succes.php');
+					}
+					else											//Sinon erreur
+					{
+					echo "Les mots de passes ne sont pas identiques.";
+					}
+			}	
+			else
+			{
+			echo"Tous les champs ne sont pas remplies";
+			}
+			
+		}
+	}	
+
+	
 ?>
 
 

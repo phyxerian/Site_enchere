@@ -91,6 +91,7 @@ function recherche() {
 
 <h1> Bonjour <?php 
 echo Membre::userIdPseudo();
+echo $_SESSION['sessionUserId'];
  ?> </h1>
 <div align="right">
 <form action="../controller/connexion.php" method="post"> <!-- bouton déconnexion -->

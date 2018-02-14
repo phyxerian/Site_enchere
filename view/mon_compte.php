@@ -2,8 +2,6 @@
 Autoloader::register();
 session_start(); // à évoluer
 
-$bdd = Database::getInstance();
-$membres= $bdd->query('SELECT * FROM membres WHERE membres_id ="'.$_SESSION['sessionUserId'].'" ');
 ?>
 
 <!DOCTYPE html>
@@ -52,32 +50,31 @@ $membres= $bdd->query('SELECT * FROM membres WHERE membres_id ="'.$_SESSION['ses
 
 
 	<form action="mon_compte.php" method="post">
-<?php 	
-$resultat = $membres->fetch();
-?>	
-<p>Pseudo : <?= $resultat['pseudo']?> <button type="submit" name="pseudo">modifier</button><p> <!-- affichage du pseudo et bouton modifier -->
+
+<p>Pseudo : <?= Membre::userIdPseudo();?> <button type="submit" name="pseudo">modifier</button><p> <!-- affichage du pseudo et bouton modifier -->
 <?php 
 if(isset($_POST['pseudo']))
 {
 ?>
 
 <label for="prenom">Pseudo : </label>
-<input placeholder=<?=$resultat['pseudo']?> type="text" id="newpseudo" name="newpseudo" />
+<input placeholder=<?=Membre::userIdPseudo()?> type="text" id="newpseudo" name="newpseudo" />
 <button type="submit" name="modpseudo">Enregistrer les modifications</button><button type="submit" name="annuler">Annuler</button>
 
 
 <?php
 }
 ?>
-			<p>Nom : <?= $resultat['nom']?><p> <!-- affichage du nom pas de modif -->					
-			<p>Prenom : <?= $resultat['prenom']?><p> <!-- affichage du prenom pas de modif -->	
-			<p>Email : <?= $resultat['email']?><p> <!-- affichage du email pas de modif -->
+			<p>Nom : <?= Membre::userIdNom();?><p> <!-- affichage du nom pas de modif -->					
+			<p>Prenom : <?= Membre::userIdPrenom();?><p> <!-- affichage du prenom pas de modif -->	
+			<p>Email : <?= Membre::userIdEmail();?><p> <!-- affichage du email pas de modif -->
 			<p>Changer le mot de passe : <button type="submit" name="mdp">modifier</button>
-			
+</form>			
 <?php 
 if(isset($_POST['mdp']))
 {
 ?>
+<form action="../controller/connexion.php" method="post">
 </br>
 <label for="prenom">Entrer votre mot de passe : </label>
 <input placeholder="Ancien mot de passe" type="password" id="mdpactuel" name="mdpactuel" /></br>
@@ -86,47 +83,19 @@ if(isset($_POST['mdp']))
 <label for="prenom">Veuillez confirmer votre mot de passe : </label>
 <input placeholder="Nouveau mot de passe" type="password" id="newmdp1" name="newmdp1" /></br>
 <button type="submit" name="modmdp">Enregistrer les modifications</button><button type="submit" name="annuler">Annuler</button>
+</form>
 <?php
 }
 
-	if(isset($_POST['modmdp'])) //Vérification qu'on a cliqué sur le boutton
-	{
-
-		if(!empty($_POST['mdpactuel']) && !empty($_POST['newmdp']) && !empty($_POST['newmdp1'])) //Si les champs ne sont pas vides
-		{
-			$rep=Membre::userPass($_POST['mdpactuel']); //appel de la fonction qui permet de vérifier que le mot de passe écrit correspond à celui en bdd
-
-			if($rep === true) //Si c'est vraie
-			{
-			
-					if($_POST['newmdp'] === $_POST['newmdp1']) //et que les deux mdp sont identiques
-					{
-
-					$newmdp = Membre::changePass($_POST['newmdp']); //function pour changer le mdp en bdd
-					echo "Le mot de passe à été changé.";
-					}
-					else											//Sinon erreur
-					{
-					echo "Les mots de passes ne sont pas identiques.";
-					}
-			}	
-			else
-			{
-			echo"Tous les champs ne sont pas remplies";
-			}
-			
-		}
-	}	
-
 ?>
 			
-	</form>
+	<!--</form>-->
 	</div>
 	<div>
 	<h1> Mon compte</h1>
 	</br>
 	<form action="../controller/connexion.php" method="post">
-	<p>Mes crédits : <?= $resultat['credit']?><p>
+	<p>Mes crédits : <?= Membre::userIdCredit();?><p>
 	<label for="credit">Créditer votre compte : </label>	
 	<input placeholder="Ajouter des crédits" type="text" id="credit" name="credit" /></br>
 	<button type="submit" name="ajout">Ajouter</button>

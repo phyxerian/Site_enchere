@@ -188,6 +188,40 @@ class Membre //création de la classe membre
 		return $data['pseudo'];
 	}
 	
+	public static function userIdNom(){ //permet de récupérer l'id d'un membre et de retourner son nom
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("SELECT * FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
+		$stmt->execute();
+		$data = $stmt->fetch();
+		return $data['nom'];
+	}	
+	
+		public static function userIdPrenom(){ //permet de récupérer l'id d'un membre et de retourner son prénom
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("SELECT * FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
+		$stmt->execute();
+		$data = $stmt->fetch();
+		return $data['prenom'];
+	}		
+	
+	
+	public static function userIdEmail(){ //permet de récupérer l'id d'un membre et de retourner son email
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("SELECT * FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
+		$stmt->execute();
+		$data = $stmt->fetch();
+		return $data['email'];
+	}	
+	
+		public static function userIdCredit(){ //permet de récupérer l'id d'un membre et de retourner son credit
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("SELECT * FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
+		$stmt->execute();
+		$data = $stmt->fetch();
+		return $data['credit'];
+	}	
+	
+	
 	public static function deleteMembre() //supprime un membre de la bdd
 	{
 		$bdd = Database::getInstance();
