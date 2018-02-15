@@ -181,10 +181,15 @@ class Objet{
 	public static function myArticle() //permet de récupérer les noms des articles vendu par un membre
 	{
 		$bdd = Database::getInstance();
-		$article = $bdd->query("SELECT nom FROM articles WHERE id_membre =" . $_SESSION['sessionUserId']);
+		$article = $bdd->query("SELECT id_articles, datefin, nom FROM articles WHERE id_membre =" . $_SESSION['sessionUserId']);
 		while($data = $article->fetch())
 		{
-		echo $data['nom'];?></br><?php
+			$today = DateToday::Today();
+			if($data['datefin']> $today)
+			{
+				$value = $data['id_articles'];
+				echo "<h2><a href='article.php?var1=".$value."'>".$data['nom']."</a></h2></br>";
+			}
 		}
 		$article->closeCursor();
 	}
@@ -257,8 +262,30 @@ class Objet{
 		
 			while($data = $stmt->fetch()) //On regarde toutes les ventes
 			{
-				if($data['datefin']<= $today){ //Si la date d'expiration est arrivée
+				if($data['datefin']>= $today){ //Si la date d'expiration est arrivée
 					echo $data['nom'];?></br><?php
+				}
+			}
+			
+		$stmt->closeCursor();
+	}
+	
+	public static function mySale(){ //Affiche mes ventes
+		
+		$id = Membre::userId();
+		$bdd = Database::getInstance(); //
+		$stmt = $bdd->prepare("SELECT nom, datefin, id_acheteur  FROM articles WHERE id_membre=" .$id);
+		$stmt->execute();
+		
+		$today = DateToday::Today();
+		
+			while($data = $stmt->fetch()) //On regarde toutes les ventes
+			{
+				if($data['id_acheteur'] != null)
+				{
+					if($data['datefin']>= $today){ //Si la date d'expiration est arrivée
+						echo $data['nom'];?></br><?php
+					}
 				}
 			}
 			

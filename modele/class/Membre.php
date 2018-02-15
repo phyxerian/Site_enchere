@@ -174,9 +174,10 @@ class Membre //création de la classe membre
 	
 	public static function userId(){ //permet de récupérer l'id
 		$bdd = Database::getInstance();
-		$stmt = $bdd->prepare("SELECT * FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
+		$stmt = $bdd->prepare("SELECT membres_id FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
 		$stmt->execute();
 		$data = $stmt->fetch();
+		$stmt->closeCursor();
 		return $data['membres_id'];
 	}
 
@@ -216,7 +217,7 @@ class Membre //création de la classe membre
 	
 		public static function userIdCredit(){ //permet de récupérer l'id d'un membre et de retourner son credit
 		$bdd = Database::getInstance();
-		$stmt = $bdd->prepare("SELECT * FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
+		$stmt = $bdd->prepare("SELECT credit FROM membres WHERE membres_id =" . $_SESSION['sessionUserId']);
 		$stmt->execute();
 		$data = $stmt->fetch();
 		return $data['credit'];
@@ -364,18 +365,18 @@ class Membre //création de la classe membre
 				$stmt->execute();
 				$data = $stmt->fetch();
 				$stmt->closeCursor();
-				
+
 				$newValue = $data['credit'] + $money;
-				
+
 				$stmt1 = $bdd->prepare("UPDATE membres SET credit = :credit WHERE membres_id =" .$id);
 				$stmt1->bindValue(':credit', $newValue,PDO::PARAM_INT);
 				$stmt1->execute();
 				$stmt1->closeCursor();
 		}
 		
-		public static function subMoney($money) //soustrait des crédits 
+		public static function subMoney($money, $id) //soustrait des crédits 
 		{
-				$id = SELF::userId();
+
 				$bdd = Database::getInstance();
 				$stmt = $bdd->prepare('SELECT credit FROM membres WHERE membres_id =' .$id );
 				$stmt->execute();
@@ -403,27 +404,31 @@ class Membre //création de la classe membre
 		public static function saleFinish($id){ //Permet d'actualiser le credit après une vente 
 		
 			$bdd = Database::getInstance();
-			$stmt = $bdd->prepare("SELECT m.membres_id ,m.credit, a.datefin, a.prix_en_cours, a.id_articles FROM membres AS m, articles As a WHERE a.id_membre=".$id);		
+			$stmt = $bdd->prepare("SELECT m.membres_id ,m.credit,a.id_acheteur, a.datefin, a.prix_en_cours, a.id_articles FROM membres AS m, articles As a WHERE a.id_membre=".$id);		
 			$stmt->execute();
 			
 			while($data = $stmt->fetch()){
-				
-				$today = DateToday::Today();
-				if($data['datefin']<=$today)
+				if($data['id_acheteur'] != null) //S'il y a bien eu un acheteur
 				{
-					$newCredit = $data['credit'] + $data['prix_en_cours'];
+					$today = DateToday::Today();
+					if($data['datefin']>=$today) //Si la date fin est plus grande qu'aujourd'hui, c'est terminé.
+					{
+						$newCredit = $data['credit'] + $data['prix_en_cours'];
 					
-					$statement = $bdd->prepare("UPDATE membres SET credit = :credit WHERE membres_id=".$id); //On met à jour les crédits
-					$statement->bindValue(':credit', $newCredit,PDO::PARAM_INT);
-					$statement->execute();
-					$statement->closeCursor();
+						$statement = $bdd->prepare("UPDATE membres SET credit = :credit WHERE membres_id=".$id); //On met à jour les crédits
+						$statement->bindValue(':credit', $newCredit,PDO::PARAM_INT);
+						$statement->execute();
+						$statement->closeCursor();
 					
-					$zero = '0';
+						$zero = '0';
 					
-					$statement1 = $bdd->prepare("UPDATE article SET prix_en_cours = :prix Where membres_id=".$id. "AND id_articles =" .$data['id_articles']); // et on vide la case prix_en_cours pour qu'il ne puisse pas obtenir des crédits plusieurs fois
-					$statement1->bindValue(':prix', $zero ,PDO::PARAM_INT);
-					$statement1->execute();
-					$statement1->closeCursor();
+						$statement1 = $bdd->prepare("UPDATE article SET prix_en_cours = :prix WHERE membres_id=".$id. "AND id_articles =" .$data['id_articles']); // et on vide la case prix_en_cours pour qu'il ne puisse pas obtenir des crédits plusieurs fois
+						$statement1->bindValue(':prix', $zero ,PDO::PARAM_INT);
+						$statement1->execute();
+						$statement1->closeCursor();
+					
+						SELF::subMoney($data['credit'], $data['id_acheteur']); //On soustrait les crédits de l'acheteur
+					}
 				}
 			}
 			$stmt->closeCursor();

@@ -265,10 +265,10 @@ if(isset($_POST['newprice'])) //Si on a cliqué sur le bouton
 			if(Membre::verifMoney($_POST['priceArt'])) //Si l'acheteur a assez d'argent
 			{
 				$price = Objet::priceArt($_POST['id']); //On récupère le prix en cours de l'article
-				if($_POST['price'] > $price) // Si le prix est supérieur au prix enregistré en bdd alors
+				if($_POST['price'] > $price) // Si le prix est strictement supérieur au prix enregistré en bdd alors
 				{
 					Objet::validPrice($_POST['price'], $_POST['id']); //On met à jour le nouveau prix
-					Membre::subMoney($_POST['price']); //On soustrait les crédits de l'acheteur
+
 					Objet::addNewBidder($_SESSION['sessionUserId'], $_POST['id']); //On ajoute l'id du nouvelle encherisseur (id_acheteur)
 					header('Location: ../view/succes.php');//On retourne sur la page succès
 				}
@@ -293,6 +293,7 @@ if(isset($_POST['newprice'])) //Si on a cliqué sur le bouton
 
 if(isset($_POST['ajout'])) // Si on a cliqué sur créditer
 {
+	var_dump($_POST['credit']);
 	Membre::addMoney($_POST['credit']); // ajoute des crédits
 	header('Location: ../view/mon_compte.php');
 }
@@ -360,7 +361,7 @@ header("Content-Type: text/plain");
 	    { 
 			
 			$bdd = Database::getInstance();
-			$reqres = $bdd->query("SELECT membres_id, nom FROM membres WHERE nom LIKE '".$LibelleRecherche."%' ORDER BY nom");
+			$reqres = $bdd->query("SELECT membres_id, nom FROM membres WHERE nom LIKE '%".$LibelleRecherche."%' ORDER BY nom");
 			
 			while ($row = $reqres->fetch()){ 
 			

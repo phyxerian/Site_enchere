@@ -1,7 +1,7 @@
 <?php require '../modele/class/Autoloader.php';
 Autoloader::register();
 session_start(); // à évoluer
-Membre::saleFinish($_SESSION['sessionUserId']);
+//Membre::saleFinish($_SESSION['sessionUserId']);
 ?>
 
 <!DOCTYPE html>
@@ -114,7 +114,7 @@ if(isset($_POST['mdp']))
 	</div>
 	<div>
 	<h1>Mes ventes</h1>
-	
+	<?php Objet::mySale();?>
 	</div>
 	
 </div>
