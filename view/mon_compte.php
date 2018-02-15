@@ -26,7 +26,7 @@ session_start(); // à évoluer
         <div class="navbar-header">
 
             <a class="navbar-brand" href="home.php">Opeth</a>
-			<a class="navbar-brand" href="acceuil.php">Acceuil</a>			
+			<a class="navbar-brand" href="acceuil.php">Accueil</a>			
         </div>
     </div>
 </nav>
@@ -50,26 +50,27 @@ session_start(); // à évoluer
 
 
 	<form action="mon_compte.php" method="post">
-
-<p>Pseudo : <?= Membre::userIdPseudo();?> <button type="submit" name="pseudo">modifier</button><p> <!-- affichage du pseudo et bouton modifier -->
+		<p>Pseudo : <?= Membre::userIdPseudo();?> <button type="submit" name="pseudo">modifier</button><p> <!-- affichage du pseudo et bouton modifier -->
+	</form>
 <?php 
 if(isset($_POST['pseudo']))
 {
 ?>
-
-<label for="prenom">Pseudo : </label>
-<input placeholder=<?=Membre::userIdPseudo()?> type="text" id="newpseudo" name="newpseudo" />
-<button type="submit" name="modpseudo">Enregistrer les modifications</button><button type="submit" name="annuler">Annuler</button>
-
+<form action="../controller/connexion.php" method="post">
+	<label for="prenom">Pseudo : </label>
+	<input placeholder=<?=Membre::userIdPseudo()?> type="text" id="newpseudo" name="newpseudo" />
+	<button type="submit" name="modpseudo">Enregistrer les modifications</button><button type="submit" name="annuler">Annuler</button>
+</form>
 
 <?php
 }
 ?>
+	<form action="mon_compte.php" method="post">
 			<p>Nom : <?= Membre::userIdNom();?><p> <!-- affichage du nom pas de modif -->					
 			<p>Prenom : <?= Membre::userIdPrenom();?><p> <!-- affichage du prenom pas de modif -->	
 			<p>Email : <?= Membre::userIdEmail();?><p> <!-- affichage du email pas de modif -->
 			<p>Changer le mot de passe : <button type="submit" name="mdp">modifier</button>
-</form>			
+	</form>			
 <?php 
 if(isset($_POST['mdp']))
 {
@@ -89,7 +90,6 @@ if(isset($_POST['mdp']))
 
 ?>
 			
-	<!--</form>-->
 	</div>
 	<div>
 	<h1> Mon compte</h1>

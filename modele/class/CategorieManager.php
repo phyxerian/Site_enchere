@@ -8,7 +8,7 @@ class CategorieManager{
 
     }
 
-    public function add(Objet $objet)
+    public function add(Categorie $objet)
     {	
 	$bdd = Database::getInstance();
 

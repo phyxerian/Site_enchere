@@ -272,7 +272,7 @@ if(isset($_POST['newprice'])) //Si on a cliqué sur le bouton
 			if($_POST['price'] > $price) // Si le prix est supérieur au prix enregistré en bdd alors
 			{
 				Objet::validPrice($_POST['price'], $_POST['id']); //On met à jour le nouveau prix
-
+				Membre::subMoney($_POST['price']);
 				header('Location: ../view/succes.php');//On retourne sur la page succès
 			}
 			else
@@ -296,15 +296,15 @@ if(isset($_POST['ajout'])) // Si on a cliqué sur créditer
 }
 
 
-//Barre de recherche
+//Barre de recherche article
 
 $urlPhoto = "../public/article/photo/";
 $urlArticle = "article.php?var1=";
  
-  header("Content-Type: text/plain");
+header("Content-Type: text/plain"); 
   
   if (isset($_POST['champRecherche'])) { 
-  
+
     if (is_string($_POST["champRecherche"])){ 
       $LibelleRecherche = stripslashes(htmlentities($_POST["champRecherche"])); 
 
@@ -319,6 +319,47 @@ $urlArticle = "article.php?var1=";
 				$value = $row['id_articles'];
 				echo "<h2><a href='". $urlArticle. "" . $value . "'>". $row["nom"]."</h2></a><br/>";
 				echo "<img src=". $urlPhoto .$row['photo']." width='150'></br>";		
+
+					} 
+			$reqres->closeCursor();		
+		} 
+		else 
+		{ 
+			echo "";
+		} 
+	} 
+	else { 
+      echo ""; 
+		} 
+} 
+else
+{ 
+	echo "";
+}
+
+
+// Barre de recherche membre pour Admin
+
+$urlPhoto = "../public/article/photo/";
+$urlArticle = "membre.php?var1=";
+ 
+header("Content-Type: text/plain"); 
+  
+  if (isset($_POST['champRechercheMembre'])) { 
+
+    if (is_string($_POST["champRechercheMembre"])){ 
+      $LibelleRecherche = stripslashes(htmlentities($_POST["champRechercheMembre"])); 
+
+	  if (empty($LibelleRecherche) == false) 
+	    { 
+			
+			$bdd = Database::getInstance();
+			$reqres = $bdd->query("SELECT membres_id, nom FROM membres WHERE nom LIKE '".$LibelleRecherche."%' ORDER BY nom");
+			
+			while ($row = $reqres->fetch()){ 
+			
+				$value = $row['membres_id']; //////
+				echo "<h2><a href='". $urlArticle. "" . $value . "'>". $row["nom"]."</h2></a><br/>";
 
 					} 
 			$reqres->closeCursor();		
@@ -355,13 +396,21 @@ else
 		}
 	}
 
-	//Voir Catégorie
+	//Modification du Pseudo
 	
-	if(isset($_POST['voirCat']))
+	if(isset($_POST['modpseudo']))
 	{
-		Admin::viewCat();
+		if(!empty($_POST['newpseudo']))
+		{
+			Membre::changePseudo($_POST['newpseudo']);
+			header('Location: ../view/mon_compte.php');
+		}
+		else
+		{
+			echo "Le champ pseudo est vide.";
+		}
 	}
-
+	
 	
 	//Modification mot de passe Membre
 	
@@ -396,6 +445,68 @@ else
 	}	
 
 	
+	// Ajouter catégorie
+
+	if(isset($_POST['addCat']))
+	{
+		if(isset($_POST['nomcat']) && !empty($_POST['nomcat']))
+		{
+			if(isset($_POST['descat']) && !empty($_POST['descat']))
+			{
+				$cat = new Categorie(array ('nom'=>$_POST['nomcat'], 'description'=>$_POST['descat']));
+					if($cat->isValid()) // normalement, cette condition ne sera jamais fausse  grace au 2eme if qui vérifie si les cases ne sont pas vides.
+					{
+						$manager = new CategorieManager();
+						$manager->add($cat);
+						header('Location: ../view/admin.php'); //Redirection vers la page acceuil si un nouveau compte à été créé.
+					}
+			}
+			else
+			{
+				echo "indiquer une description";
+			}
+		}
+		else
+		{
+			echo "Indiquer un nom";
+		}
+	}
+	
+	// Supprimer catégorie (Admin)
+
+	if(isset($_POST['suppcat']))
+	{
+
+		if(isset($_POST['nomcatsupp']) && !empty($_POST['nomcatsupp']))
+		{
+			echo'coucou';
+			Categorie::deleteCat($_POST['nomcatsupp']);
+			var_dump($_POST['nomcatsupp']);
+			header('Location: ../view/admin.php');
+		}
+		else
+		{
+			echo "Mauvais nom ou nom inexistant.";
+		}
+	}
+	
+	//Supprimer un article côté Admin
+	
+
+if(isset($_POST['suppartadmin']))
+{
+		var_dump($_POST['idArticle']);
+		Objet::deleteArt($_POST['idArticle']);
+		header('Location: ../view/admin.php');		
+}	
+	
+	//Supprimer membre côté Admin
+	
+if(isset($_POST['suppmembreadmin']))
+{
+		Membre::deleteMembreAdmin($_POST['idMembre']);
+		header('Location: ../view/admin.php');		
+}		
 ?>
 
 

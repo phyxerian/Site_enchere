@@ -18,7 +18,7 @@
     <div class="container">
         <div class="navbar-header">
 
-            <a class="navbar-brand" href="#">Opeth</a>
+            <a class="navbar-brand" href="home.php">Opeth</a>
         </div>
     </div>
 </nav>

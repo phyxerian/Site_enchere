@@ -19,8 +19,74 @@ session_start(); // à évoluer
 
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-	
 
+	
+		<script type="text/javascript"> 
+
+//Retourne l'objet XMLHttpRequest Instancié
+
+function getXMLHttpRequest() { 
+var xhr = null; 
+if (window.XMLHttpRequest || window.ActiveXObject) { 
+if (window.ActiveXObject) { 
+try { 
+xhr = new ActiveXObject("Msxml2.XMLHTTP"); 
+} catch(e) { 
+xhr = new ActiveXObject("Microsoft.XMLHTTP"); 
+} 
+} else { 
+xhr = new XMLHttpRequest(); 
+} 
+} else { 
+alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest..."); 
+return null; 
+} 
+return xhr; 
+} 
+
+function recherche() { 
+  var xmlHttp = getXMLHttpRequest(); 
+  
+  if (xmlHttp == null){ 
+      alert("Votre navigateur ne supporte pas les requêtes HTTP."); 
+      return false; }
+	  
+  // fonction à exécuter dès réception de la réponse 
+  
+  xmlHttp.onreadystatechange = function(){ 
+			if (xmlHttp.readyState==4 && xmlHttp.status==200) 
+			document.getElementById('div_contenuRecherche').innerHTML = xmlHttp.responseText; 
+		}
+  
+	xmlHttp.open("POST","../controller/connexion.php",true); 
+	xmlHttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded'); 
+	xmlHttp.send("champRecherche="+document.getElementById("champRecherche").value); 
+}
+
+function rechercheMembre() { 
+  var xmlHttp = getXMLHttpRequest(); 
+  
+  if (xmlHttp == null){ 
+      alert("Votre navigateur ne supporte pas les requêtes HTTP."); 
+      return false; }
+	  
+  // fonction à exécuter dès réception de la réponse 
+  
+  xmlHttp.onreadystatechange = function(){ 
+			if (xmlHttp.readyState==4 && xmlHttp.status==200) 
+			document.getElementById('div_contenuRechercheMembre').innerHTML = xmlHttp.responseText; 
+		}
+  
+	xmlHttp.open("POST","../controller/connexion.php",true); 
+	xmlHttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded'); 
+	xmlHttp.send("champRechercheMembre="+document.getElementById("champRechercheMembre").value); 
+}
+</script>	
+	
+	
+	
+	
+<head>	
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -28,7 +94,7 @@ session_start(); // à évoluer
         <div class="navbar-header">
 
             <a class="navbar-brand" href="home.php">Opeth</a>
-			<a class="navbar-brand" href="acceuil.php">Acceuil</a>			
+			<a class="navbar-brand" href="acceuil.php">Accueil</a>			
         </div>
     </div>
 </nav>
@@ -48,26 +114,61 @@ session_start(); // à évoluer
 		<div align="left">	
 		
 		<h2> Categories </h2>
+				
+				<?php echo Categorie::viewCat();?>
 		
-		<!--<form action="../controller/connexion.php" method ="post">-->
-		<input type="button" value="voirCat" onClick="Admin::viewCat();"></br> 
-		<!--<button type="submit" name="voirCat"> Voir </button></br>-->
-		<button type="submit" name="addCat"> Ajouter </button></br>
-		<button type="submit" name="suppCat"> Supprimer </button></br>
-		<!--</form>-->
+		<h3>Ajouter une Categorie</h3>
 		
-		<h2> Membres </h2>
+		<form action="../controller/connexion.php" method ="post">
+            <tr>
+			   <td>
+                    </br><label for="nomcategorie">Nom : </label>
+                </td>
+                <td>
+                    <input type="text" id="nomcat" name="nomcat" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="descriptioncat">Description : </label>
+                </td>
+                <td>
+                    <input type="text" id="descat" name="descat" />
+                </td>		
+			</tr>
+		<button type="submit" name="addCat">Ajouter</button> 
+		</form>	
 		
-		<form action="connexion.php" method ="post">
+		<h3>Supprimer une categorie</h3>
 		
-		</form>		
+		<form action="../controller/connexion.php" method ="post">
+            <tr>    
+				<td>
+                    </br><label for="nomcategoriesupp">Nom Catégorie: </label>
+                </td>
+                <td>
+                    <input type="text" id="nomcatsupp" name="nomcatsupp" />
+                </td>
+            </tr>
+
+		<button type="submit" name="suppcat">Supprimer</button> 
+		</form>			
+
+
+		</br><h2> Membres </h2></br>
 		
-		<h2> Annonces </h2>		
+		<div> 
+			<input type="text" placeholder="Recherche..." style="width:400px" name="champRechercheMembre" id="champRechercheMembre"onkeyup="rechercheMembre();"value=""/>&nbsp;&nbsp;<input type="button" value="Rechercher" onClick="rechercheMembre();"> 
+			<div id="div_contenuRechercheMembre"></div> 
+		</div> 
 		
-		<form action="connexion.php" method ="post">
-		
-		</form>		
-		
+		</br><h2> Annonces </h2></br>		
+	
+		<div> 
+			<input type="text" placeholder="Recherche..." style="width:400px" name="champRecherche" id="champRecherche"onkeyup="recherche();"value=""/>&nbsp;&nbsp;<input type="button" value="Rechercher" onClick="recherche();"> 
+			<div id="div_contenuRecherche"></div> 
+		</div> 
+
 		</div>	
 
 

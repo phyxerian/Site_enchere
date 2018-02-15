@@ -228,5 +228,13 @@ class Objet{
 		$stmt->execute();
 		$stmt->closeCursor();
 	}
+	
+	public static function deleteArt($idArt)
+	{
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("DELETE FROM articles WHERE id_articles =" .$idArt);
+		$stmt->execute();
+		$stmt->closeCursor();
+	}
 }
 ?>

@@ -4,7 +4,7 @@ require '../modele/class/Autoloader.php';
 Autoloader::register();
 
 $bdd = Database::getInstance();
-$articles= $bdd->query('SELECT prix_en_cours, id_articles, etat, nom, id_membre, datefin, photo FROM articles WHERE id_articles = '. $_GET['var1'] .' ORDER BY id_articles DESC');
+$membre= $bdd->query('SELECT membres_id, pseudo, nom, prenom FROM membres WHERE membres_id = '. $_GET['var1'] .' ORDER BY nom');
 
 ?>
 <!DOCTYPE html>
@@ -30,7 +30,7 @@ $articles= $bdd->query('SELECT prix_en_cours, id_articles, etat, nom, id_membre,
     <div class="container">
         <div class="navbar-header">
 
-            <a class="navbar-brand" href="home.php">opeth</a>
+            <a class="navbar-brand" href="home.php">Opeth</a>
 			<a class="navbar-brand" href="acceuil.php">Accueil</a>				
         </div>
     </div>
@@ -45,21 +45,16 @@ $articles= $bdd->query('SELECT prix_en_cours, id_articles, etat, nom, id_membre,
 
 <?php
 
-	$resultat = $articles->fetch() ; //On récupère le tableau de la table article
-	$nom = Objet::recupNom($resultat['id_membre']); //On récupère le pseudo du vendeur	
-	$idArticle = ($resultat['id_articles']);
+	$resultat = $membre->fetch() ; //On récupère le tableau de la table article
 ?>
 	<form action="../controller/connexion.php" method="post">
 		<h2><?= $resultat['nom']?> </h2>
-		<p>vendeur : <?= $nom['pseudo']  ?></p>
-		<p>Etat : <?= $resultat['etat'] ?><p> 
-		<p>prix : <?= $resultat['prix_en_cours'] ?> Euros <p>
-		<input type="text" name="price" placeholder="Votre nouveau prix" /> <button type="submit" name="newprice" >Enchérir</button>
-		<input type="hidden" name="id" value="<?php echo "".$idArticle.""?>">
-		<p>Date fin : <?= $resultat['datefin'] ?><p> 
-		<img src="../public/article/photo/<?php echo $resultat['photo']?>" width="150">
+		<p>Pseudo : <?= $resultat['pseudo']  ?></p>
+		<p>Nom : <?= $resultat['nom'] ?><p> 
+		<p>Prenom : <?= $resultat['prenom'] ?> <p>
+
 		<?php $idAdmin = Admin::coAdmin($_SESSION['sessionUserId']);
-		FormAdmin::buttonSuppArt($idAdmin, $resultat['id_articles']);
+		FormAdmin::buttonSuppMembre($idAdmin, $resultat['membres_id']);
 		?>
 	</form>	
 

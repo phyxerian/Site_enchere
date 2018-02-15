@@ -6,11 +6,11 @@ class Categorie{
 	const NOM_INVALIDE = 1;
     const DESCRIPTION_INVALIDE = 2;
 	
-	public function __construct($newcat){
-            if(isset($newMembre['nom']))
-            $this->setPseudo($newMembre['nom']);
-        if(isset($newMembre['description']))
-            $this->setNom($newMembre['description']);
+	public function __construct($newCat){
+            if(isset($newCat['nom']))
+            $this->setNom($newCat['nom']);
+        if(isset($newCat['description']))
+            $this->setDescription($newCat['description']);
 	}
 	
 	    //Setters
@@ -51,4 +51,43 @@ class Categorie{
     {
         return !empty($this->nom) && !empty($this->description);
     }	
+	
+	//Fonction
+	public static function idCat($nom) //retourne l'id à partir du nom
+	{
+		$bdd = Database::getInstance();
+		$stmt = $bdd->query('SELECT id_cat FROM categorie WHERE nom="'.$nom.'"');
+		$stmt->execute();
+		$data = $stmt->fetch();
+		$stmt->closeCursor();
+		
+		return $data['id_cat'];
+		
+	}
+	
+	
+	public static function viewCat() // permet d'afficher toutes les catégories
+	{
+		
+		$bdd = Database::getInstance();
+		$stmt = $bdd->query('SELECT * FROM categorie ORDER BY id_cat');
+		
+		
+		while($data = $stmt->fetch())
+		{
+			echo "<td>".$data['nom']. "</td></br>";
+	
+		}
+				$stmt->closeCursor();
+		
+	}
+	
+	public static function deleteCat($nom) //Supprimer une catégorie
+	{
+		$id = SELF::idCat($nom);
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare('DELETE FROM categorie WHERE id_cat ='.$id);
+		$stmt->execute();
+		$stmt->closeCursor();
+	}
 }

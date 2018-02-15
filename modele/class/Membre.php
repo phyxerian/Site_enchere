@@ -12,6 +12,7 @@ class Membre //création de la classe membre
     private $sexe;
     private $ddn;
 	private $userPass; //vérifie que le mdp correspond
+	private $money;
     private $erreurs = array();
 
     const NOM_INVALIDE = 1;
@@ -226,12 +227,19 @@ class Membre //création de la classe membre
 	{
 		$bdd = Database::getInstance();
 		$stmt = $bdd->prepare("DELETE FROM membres WHERE membres_id =". $_SESSION['sessionUserId']);
-		var_dump($_SESSION['sessionUserId']);
 		$stmt->execute();
-		var_dump($stmt);
 		$stmt->closeCursor();
-		var_dump($stmt);
+
 	}
+	
+	public static function deleteMembreAdmin($id) //supprime un membre de la bdd pour Admin
+	{
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("DELETE FROM membres WHERE membres_id =".$id);
+		$stmt->execute();
+		$stmt->closeCursor();
+
+	}	
 	
 	public static function userPass($userPass) //Permet de vérifier que le mot de passe rentré correspond à celui de la bdd
 	{
@@ -260,6 +268,16 @@ class Membre //création de la classe membre
 		$bdd = Database::getInstance();
 		$stmt = $bdd->prepare("UPDATE membres SET mot_de_passe = :newPass WHERE membres_id=" .$id);
 		$stmt->bindValue(':newPass', $newPass,PDO::PARAM_STR);
+		$stmt->execute();
+		$stmt->closeCursor();
+	}
+	
+		public static function changePseudo($newPseudo) //permet de changer le Pseudo
+	{
+		$id = SELF::userId();
+		$bdd = Database::getInstance();
+		$stmt = $bdd->prepare("UPDATE membres SET pseudo = :newPseudo WHERE membres_id=" .$id);
+		$stmt->bindValue(':newPseudo', $newPseudo,PDO::PARAM_STR);
 		$stmt->execute();
 		$stmt->closeCursor();
 	}
@@ -322,7 +340,6 @@ class Membre //création de la classe membre
 		public static function addMoney($money) //ajoute des crédits 
 		{
 				$id = SELF::userId();
-				var_dump($id);
 				$bdd = Database::getInstance();
 				$stmt = $bdd->prepare('SELECT credit FROM membres WHERE membres_id =' .$id );
 				$stmt->execute();
@@ -336,5 +353,22 @@ class Membre //création de la classe membre
 				$stmt1->execute();
 				$stmt1->closeCursor();
 		}
+		
+		public static function subMoney($money) //ajoute des crédits 
+		{
+				$id = SELF::userId();
+				$bdd = Database::getInstance();
+				$stmt = $bdd->prepare('SELECT credit FROM membres WHERE membres_id =' .$id );
+				$stmt->execute();
+				$data = $stmt->fetch();
+				$stmt->closeCursor();
+				
+				$newValue = $data['credit'] - $money;
+				
+				$stmt1 = $bdd->prepare("UPDATE membres SET credit = :credit WHERE membres_id =" .$id);
+				$stmt1->bindValue(':credit', $newValue,PDO::PARAM_INT);
+				$stmt1->execute();
+				$stmt1->closeCursor();
+		}		
 }
 ?>

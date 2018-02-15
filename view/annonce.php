@@ -28,8 +28,8 @@ session_start();
     <div class="container">
         <div class="navbar-header">
 
-            <a class="navbar-brand" href="#">Opeth</a>
-			<a class="navbar-brand" href="acceuil.php">Acceuil</a>				
+            <a class="navbar-brand" href="home.php">Opeth</a>
+			<a class="navbar-brand" href="acceuil.php">Accueil</a>				
         </div>
     </div>
 </nav>

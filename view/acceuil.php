@@ -17,7 +17,7 @@ Autoloader::register();
 
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <title> Page acceuil membre </title>
+    <title> Page accueil membre </title>
 	
 	
 	
@@ -73,6 +73,8 @@ function recherche() {
             <a class="navbar-brand" href="home.php">Opeth</a>
 			<a class="navbar-brand" href="mon_compte.php">Mon compte</a>
 			<a class="navbar-brand" href="annonce.php">Mettre une annonce</a>
+			<?php $idAdmin = Admin::coAdmin($_SESSION['sessionUserId']);
+					FormAdmin::pageAdmin($idAdmin);?>
         </div>
     </div>
 </nav>
@@ -81,7 +83,7 @@ function recherche() {
 
     <div class="starter-template" style="padding-top: 100px;">
 	
-        <h1>Acceuil</h1>
+        <h1>Accueil</h1>
     </div>
 
 
@@ -91,7 +93,7 @@ function recherche() {
 
 <h1> Bonjour <?php 
 echo Membre::userIdPseudo();
-echo $_SESSION['sessionUserId'];
+
  ?> </h1>
 <div align="right">
 <form action="../controller/connexion.php" method="post"> <!-- bouton déconnexion -->
