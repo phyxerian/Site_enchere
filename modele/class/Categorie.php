@@ -2,6 +2,7 @@
 class Categorie{
 	private $nom;
 	private $description =0;
+	private $cat;
 	
 	const NOM_INVALIDE = 1;
     const DESCRIPTION_INVALIDE = 2;
@@ -65,6 +66,16 @@ class Categorie{
 		
 	}
 	
+	public static function choiceCat($cat){ //Choix d'une categorie
+	
+			$bdd = Database::getInstance();			
+			$req= $bdd->prepare("SELECT id_cat FROM categorie WHERE id_cat = ". $cat. "");
+			$req->execute();
+			$categorie = $req->fetch();	
+			return $categorie;
+	
+	}
+
 	
 	public static function viewCat() // permet d'afficher toutes les catégories
 	{

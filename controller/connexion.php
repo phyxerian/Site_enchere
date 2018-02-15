@@ -78,8 +78,7 @@ if(isset($_POST['forminscription']))
 							$emaillenght = strlen($_POST['email']);
 							if($emaillenght <=255)
 							{
-									$fuseau = new DateTimeZone('Europe/Paris'); //fuseau
-									$today = new DateTime($time = "now", $fuseau); //aujourd'hui
+									$today = new DateTime();
 									$date_18 = $today->sub(new DateInterval('P18Y')); //date - 18 ans
 									$ddn = DateTime::createFromFormat('Y-m-d', $_POST['ddn']);
 									
@@ -173,13 +172,8 @@ if(isset($_POST['annonce']))
 {
 
 		if(!empty($_POST['nom']) && !empty($_POST['desc']) && !empty($_POST['prix']) && !empty($_POST['etat']) && !empty($_POST['choix']))
-		{
-
-			$bdd = Database::getInstance();			
-			$req= $bdd->prepare("SELECT id_cat FROM categorie WHERE id_cat = ". $_POST['choix']. "");
-			$req->execute();
-			$categorie = $req->fetch();
-
+		{	
+			$categorie = Categorie::choiceCat($_POST['choix']);
 
 			$objet=new Objet(array ('nom'=>$_POST['nom'], 'description'=>$_POST['desc'], 'etat'=>$_POST['etat'], 'prix'=>$_POST['prix'], 'cat'=>$_POST['choix'], 'dateFin'=>$_POST['df']));
 
@@ -206,7 +200,7 @@ if(isset($_POST['annonce']))
 							$resultat = move_uploaded_file($_FILES['photo']['tmp_name'], $path);
 							if($resultat) //si le déplacement c'est bien effectuer
 							{
-
+								$bdd = Database::getInstance();
 								$photo = $bdd->prepare("UPDATE articles SET photo = :photo WHERE id_articles = :id" );
 								$photo->execute(array(
 								'photo' => $idA.".".$extensionUpload,
@@ -268,13 +262,14 @@ if(isset($_POST['newprice'])) //Si on a cliqué sur le bouton
 		
 		if($_SESSION['sessionUserId'] != $idM) //si le vendeur n'est pas l'enchérisseur alors
 		{
-			if(Membre::verifMoney($_POST['priceArt']))
+			if(Membre::verifMoney($_POST['priceArt'])) //Si l'acheteur a assez d'argent
 			{
 				$price = Objet::priceArt($_POST['id']); //On récupère le prix en cours de l'article
 				if($_POST['price'] > $price) // Si le prix est supérieur au prix enregistré en bdd alors
 				{
 					Objet::validPrice($_POST['price'], $_POST['id']); //On met à jour le nouveau prix
-					Membre::subMoney($_POST['price']);
+					Membre::subMoney($_POST['price']); //On soustrait les crédits de l'acheteur
+					Objet::addNewBidder($_SESSION['sessionUserId'], $_POST['id']); //On ajoute l'id du nouvelle encherisseur (id_acheteur)
 					header('Location: ../view/succes.php');//On retourne sur la page succès
 				}
 				else
@@ -319,12 +314,11 @@ header("Content-Type: text/plain");
 	    { 
 			
 			$bdd = Database::getInstance();
-			$reqres = $bdd->query("SELECT id_articles, nom, photo, datefin FROM articles WHERE nom LIKE '".$LibelleRecherche."%' ORDER BY nom");
+			$reqres = $bdd->query("SELECT id_articles, nom, photo, datefin FROM articles WHERE nom LIKE '%".$LibelleRecherche."%' ORDER BY nom");
 
 				while ($row = $reqres->fetch()){ 
 			
-					$fuseau = new DateTimeZone('Europe/Paris'); //fuseau
-					$today = new DateTime($time = "now", $fuseau); //aujourd'hui
+					$today = DateToday::Today();  //retourne la date d'aujourd'hui
 			
 					if($row['datefin']>$today) // Si l'enchère n'est pas terminée.
 					{

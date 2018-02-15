@@ -297,8 +297,7 @@ class Membre //création de la classe membre
 		else
 		{
 			return false;
-		}
-		
+		}	
 	}
 	
 		public static function verifEmail($email) //vérifie si un email rentré correspond à un email en base de données.
@@ -389,6 +388,47 @@ class Membre //création de la classe membre
 				$stmt1->bindValue(':credit', $newValue,PDO::PARAM_INT);
 				$stmt1->execute();
 				$stmt1->closeCursor();
-		}		
+		}
+
+		public static function idAcheteur($id) //Récupère l'id_acheteur de la table articles et retourne le nom de celui-ci de la table membres
+		{
+			$bdd = Database::getInstance();
+			$stmt = $bdd->prepare("SELECT m.pseudo FROM membres AS m, articles As a WHERE m.membres_id =" .$id);		
+			$stmt->execute();
+			$data = $stmt->fetch();
+			$stmt->closeCursor();
+			return $data['pseudo'];
+		}
+		
+		public static function saleFinish($id){ //Permet d'actualiser le credit après une vente 
+		
+			$bdd = Database::getInstance();
+			$stmt = $bdd->prepare("SELECT m.membres_id ,m.credit, a.datefin, a.prix_en_cours, a.id_articles FROM membres AS m, articles As a WHERE a.id_membre=".$id);		
+			$stmt->execute();
+			
+			while($data = $stmt->fetch()){
+				
+				$today = DateToday::Today();
+				if($data['datefin']<=$today)
+				{
+					$newCredit = $data['credit'] + $data['prix_en_cours'];
+					
+					$statement = $bdd->prepare("UPDATE membres SET credit = :credit WHERE membres_id=".$id); //On met à jour les crédits
+					$statement->bindValue(':credit', $newCredit,PDO::PARAM_INT);
+					$statement->execute();
+					$statement->closeCursor();
+					
+					$zero = '0';
+					
+					$statement1 = $bdd->prepare("UPDATE article SET prix_en_cours = :prix Where membres_id=".$id. "AND id_articles =" .$data['id_articles']); // et on vide la case prix_en_cours pour qu'il ne puisse pas obtenir des crédits plusieurs fois
+					$statement1->bindValue(':prix', $zero ,PDO::PARAM_INT);
+					$statement1->execute();
+					$statement1->closeCursor();
+				}
+			}
+			$stmt->closeCursor();
+
+		
+		}
 }
 ?>

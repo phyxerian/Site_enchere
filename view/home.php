@@ -3,7 +3,7 @@ session_start();
 require '../modele/class/Autoloader.php';
 Autoloader::register();
 Database::getInstance();
-
+//Demarrage::sessionExist($_SESSION['sessionUserId']);
 ?>
 <!DOCTYPE html>
 <html>

@@ -216,8 +216,8 @@ class Objet{
 		$stmt->execute();
 		$data = $stmt->fetch();
 		$stmt->closeCursor();
-		return $data;
-		var_dump($data);
+		return $data['id_membre'];
+
 	}
 	
 	public static function validPrice($newPrice, $idArt) //Met à jour le prix
@@ -229,11 +229,39 @@ class Objet{
 		$stmt->closeCursor();
 	}
 	
-	public static function deleteArt($idArt)
+	public static function addNewBidder($idAcheteur, $idArt){ //permet d'ajouter le membres_id de l'acheteur dans la table article
+	
+			$bdd = Database::getInstance();
+			$stmt1 = $bdd->prepare("UPDATE articles SET id_acheteur = :idAcheteur WHERE id_articles =" .$idArt);
+			$stmt1->bindValue(':idAcheteur', $idAcheteur,PDO::PARAM_INT);
+			$stmt1->execute();
+			$stmt1->closeCursor();
+	
+	}
+	
+	public static function deleteArt($idArt) //Supprimer un article
 	{
 		$bdd = Database::getInstance();
 		$stmt = $bdd->prepare("DELETE FROM articles WHERE id_articles =" .$idArt);
 		$stmt->execute();
+		$stmt->closeCursor();
+	}
+	
+	public static function acquisition($id)//Affiche les objets que l'on a obtenue en enchère, $id est l'id de Session
+	{
+		$bdd = Database::getInstance(); //
+		$stmt = $bdd->prepare("SELECT nom, datefin FROM articles WHERE id_acheteur=" .$id);
+		$stmt->execute();
+		
+		$today = DateToday::Today();
+		
+			while($data = $stmt->fetch()) //On regarde toutes les ventes
+			{
+				if($data['datefin']<= $today){ //Si la date d'expiration est arrivée
+					echo $data['nom'];?></br><?php
+				}
+			}
+			
 		$stmt->closeCursor();
 	}
 }
