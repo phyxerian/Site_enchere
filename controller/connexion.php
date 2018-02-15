@@ -268,16 +268,23 @@ if(isset($_POST['newprice'])) //Si on a cliqué sur le bouton
 		
 		if($_SESSION['sessionUserId'] != $idM) //si le vendeur n'est pas l'enchérisseur alors
 		{
-			$price = Objet::priceArt($_POST['id']); //On récupère le prix en cours de l'article
-			if($_POST['price'] > $price) // Si le prix est supérieur au prix enregistré en bdd alors
+			if(Membre::verifMoney($_POST['priceArt']))
 			{
-				Objet::validPrice($_POST['price'], $_POST['id']); //On met à jour le nouveau prix
-				Membre::subMoney($_POST['price']);
-				header('Location: ../view/succes.php');//On retourne sur la page succès
+				$price = Objet::priceArt($_POST['id']); //On récupère le prix en cours de l'article
+				if($_POST['price'] > $price) // Si le prix est supérieur au prix enregistré en bdd alors
+				{
+					Objet::validPrice($_POST['price'], $_POST['id']); //On met à jour le nouveau prix
+					Membre::subMoney($_POST['price']);
+					header('Location: ../view/succes.php');//On retourne sur la page succès
+				}
+				else
+				{
+					echo 'Le prix doit être supérieur à celui actuel.';
+				}
 			}
 			else
 			{
-				echo 'Le prix doit être supérieur à celui actuel.';
+					echo "Vous n'avez pas assez d'argent.";
 			}
 		}
 		else
@@ -312,16 +319,21 @@ header("Content-Type: text/plain");
 	    { 
 			
 			$bdd = Database::getInstance();
-			$reqres = $bdd->query("SELECT id_articles, nom, photo FROM articles WHERE nom LIKE '".$LibelleRecherche."%' ORDER BY nom");
-			
-			while ($row = $reqres->fetch()){ 
-			
-				$value = $row['id_articles'];
-				echo "<h2><a href='". $urlArticle. "" . $value . "'>". $row["nom"]."</h2></a><br/>";
-				echo "<img src=". $urlPhoto .$row['photo']." width='150'></br>";		
+			$reqres = $bdd->query("SELECT id_articles, nom, photo, datefin FROM articles WHERE nom LIKE '".$LibelleRecherche."%' ORDER BY nom");
 
-					} 
-			$reqres->closeCursor();		
+				while ($row = $reqres->fetch()){ 
+			
+					$fuseau = new DateTimeZone('Europe/Paris'); //fuseau
+					$today = new DateTime($time = "now", $fuseau); //aujourd'hui
+			
+					if($row['datefin']>$today) // Si l'enchère n'est pas terminée.
+					{
+						$value = $row['id_articles'];
+						echo "<h2><a href='". $urlArticle. "" . $value . "'>". $row["nom"]."</h2></a><br/>";
+						echo "<img src=". $urlPhoto .$row['photo']." width='150'></br>";		
+					}
+				} 
+				$reqres->closeCursor();		
 		} 
 		else 
 		{ 

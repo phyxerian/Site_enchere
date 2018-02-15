@@ -56,6 +56,7 @@ $articles= $bdd->query('SELECT prix_en_cours, id_articles, etat, nom, id_membre,
 		<p>prix : <?= $resultat['prix_en_cours'] ?> Euros <p>
 		<input type="text" name="price" placeholder="Votre nouveau prix" /> <button type="submit" name="newprice" >Enchérir</button>
 		<input type="hidden" name="id" value="<?php echo "".$idArticle.""?>">
+		<input type="hidden" name="priceArt" value="<?php echo "".$resultat['prix_en_cours'].""?>">		
 		<p>Date fin : <?= $resultat['datefin'] ?><p> 
 		<img src="../public/article/photo/<?php echo $resultat['photo']?>" width="150">
 		<?php $idAdmin = Admin::coAdmin($_SESSION['sessionUserId']);

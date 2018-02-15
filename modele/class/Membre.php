@@ -337,6 +337,26 @@ class Membre //création de la classe membre
 			$stmt->closeCursor();
 		}
 		
+		public static function verifMoney($money) //Permet de vérifier qu'un membre a assez d'argent. champ $money = prix du produit voulu
+		{
+				$id = SELF::userId();
+				$bdd = Database::getInstance();
+				$stmt = $bdd->prepare('SELECT credit FROM membres WHERE membres_id =' .$id );
+				$stmt->execute();
+				$data = $stmt->fetch();
+				$stmt->closeCursor();
+				
+				if($data['credit']>= $money)
+				{
+					return true;
+				}
+				else{
+					return false;
+				}
+		}
+		
+		
+		
 		public static function addMoney($money) //ajoute des crédits 
 		{
 				$id = SELF::userId();
@@ -354,7 +374,7 @@ class Membre //création de la classe membre
 				$stmt1->closeCursor();
 		}
 		
-		public static function subMoney($money) //ajoute des crédits 
+		public static function subMoney($money) //soustrait des crédits 
 		{
 				$id = SELF::userId();
 				$bdd = Database::getInstance();
