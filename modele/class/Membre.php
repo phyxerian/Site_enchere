@@ -411,7 +411,7 @@ class Membre //création de la classe membre
 				if($data['id_acheteur'] != null) //S'il y a bien eu un acheteur
 				{
 					$today = DateToday::Today();
-					if($data['datefin']>=$today) //Si la date fin est plus grande qu'aujourd'hui, c'est terminé.
+					if($data['datefin']<=$today) //Si la date fin est plus petite qu'aujourd'hui, c'est terminé.
 					{
 						$newCredit = $data['credit'] + $data['prix_en_cours'];
 					
@@ -420,9 +420,9 @@ class Membre //création de la classe membre
 						$statement->execute();
 						$statement->closeCursor();
 					
-						$zero = '0';
+						$zero = 0;
 					
-						$statement1 = $bdd->prepare("UPDATE article SET prix_en_cours = :prix WHERE membres_id=".$id. "AND id_articles =" .$data['id_articles']); // et on vide la case prix_en_cours pour qu'il ne puisse pas obtenir des crédits plusieurs fois
+						$statement1 = $bdd->prepare("UPDATE articles SET prix_en_cours = :prix WHERE id_articles=".$data['id_articles']); // et on vide la case prix_en_cours pour qu'il ne puisse pas obtenir des crédits plusieurs fois
 						$statement1->bindValue(':prix', $zero ,PDO::PARAM_INT);
 						$statement1->execute();
 						$statement1->closeCursor();

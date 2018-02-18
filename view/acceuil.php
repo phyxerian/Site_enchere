@@ -2,6 +2,7 @@
 session_start();
 require '../modele/class/Autoloader.php';
 Autoloader::register();
+Membre::saleFinish($_SESSION['sessionUserId']);
 ?>
 
 <!DOCTYPE html>
@@ -18,8 +19,9 @@ Autoloader::register();
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <title> Page accueil membre </title>
-	
-	
+<style type="text/css">
+	<?php include('../public/css/css.css'); ?>
+</style>	
 	
 	
 	<script type="text/javascript"> 
@@ -82,30 +84,24 @@ function recherche() {
 <div class="container">
 
     <div class="starter-template" style="padding-top: 100px;">
-	
-        <h1>Accueil</h1>
+			<h1 align="center" >Accueil</h1>
     </div>
-
-
-</div><!-- /.container -->
-
 <!-- TEST -->
 
-<h1> Bonjour <?php 
-echo Membre::userIdPseudo();
-//echo DateToday::Today(); 
- ?> </h1>
-<div align="right">
-<form action="../controller/connexion.php" method="post"> <!-- bouton déconnexion -->
-    <button	type="submit" name="supprimer_sess">Déconnexion</button> <!-- //déconnexion de la session membre -->
-</form>
-</div>
+<h2> Bonjour <?php 
+echo Membre::userIdPseudo(); //echo DateToday::Today(); ?> </h2>
 
-  <div> 
-    <input type="text" placeholder="Recherche..." style="width:400px" name="champRecherche" id="champRecherche"onkeyup="recherche();"value=""/>&nbsp;&nbsp;<input type="button" value="Rechercher" onClick="recherche();"> 
-  <div id="div_contenuRecherche"></div> 
+	<div align="right">
+		<form action="../controller/connexion.php" method="post"> <!-- bouton déconnexion -->
+			<button	type="submit" name="supprimer_sess">Déconnexion</button> <!-- //déconnexion de la session membre -->
+		</form>
+	</div>
+
+    <div> 
+		<input type="text" placeholder="Recherche..." style="width:400px" name="champRecherche" id="champRecherche"onkeyup="recherche();"value=""/>&nbsp;&nbsp;<input type="button" class="button-input" value="Rechercher" onClick="recherche();"> 
+		<div id="div_contenuRecherche"></div> 
     </div> 
 
-
+</div><!-- /.container -->
 </body>
 </html>

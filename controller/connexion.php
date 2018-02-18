@@ -11,6 +11,8 @@ if(isset($_POST['formconnexion']))
 
     if (!empty($_POST['login']) && !empty($_POST['mdpco']))
     {
+		if(is_string($_POST['login'])&&is_string($_POST['mdpco']))
+		{
 			$pass_hache = sha1($_POST['mdpco']); //hachage du mdp pour le retrouver dans la bdd
 		
 			$bdd = Database::getInstance(); // Obtention de l'instance de base de données
@@ -21,35 +23,34 @@ if(isset($_POST['formconnexion']))
             $reponse1 = $bdd->prepare('SELECT mot_de_passe FROM membres WHERE mot_de_passe = "' . $pass_hache . '" '); //On vérifie que le mdp existe dans la bdd
 			$reponse1->execute();
             $mdpco = $reponse1->fetch();
+			
 
-			if($_POST['login'] == $mail['email'] && $pass_hache == $mdpco['mot_de_passe'] ) //Si le mail (qui est forcément unique) et le mdp correspondent on se co et on créer une session
-			{
+				if($_POST['login'] == $mail['email'] && $pass_hache == $mdpco['mot_de_passe'] ) //Si le mail (qui est forcément unique) et le mdp correspondent on se co et on créer une session
+				{		
+					$stet = $bdd->prepare('SELECT membres_id FROM membres WHERE email = "' . $_POST['login'] . '" '); //On récupère l'id
+					$stet->execute();
+					$id = $stet->fetch();
 				
-				$stet = $bdd->prepare('SELECT membres_id FROM membres WHERE email = "' . $_POST['login'] . '" '); //On récupère l'id
-				$stet->execute();
-				$id = $stet->fetch();
+					session_start();
+					$_SESSION['sessionUserId'] = $id['membres_id']; //La session Id à pour valeur l'id du membre
 				
-				session_start();
-				$_SESSION['sessionUserId'] = $id['membres_id']; //La session Id à pour valeur l'id du membre
+					$idAdmin= Admin::coAdmin($_SESSION['sessionUserId']);
 				
-				$idAdmin= Admin::coAdmin($_SESSION['sessionUserId']);
+					var_dump($idAdmin);
+					var_dump($_SESSION['sessionUserId']);
 				
-				var_dump($idAdmin);
-				var_dump($_SESSION['sessionUserId']);
-				
-				if($idAdmin === true)
-				{
-				header ('Location: ../view/admin.php');
-		
+					if($idAdmin === true)
+					{
+					header ('Location: ../view/admin.php');
+					}
+					else{
+					header ('Location: ../view/acceuil.php');
+					}
 				}
 				else{
-				header ('Location: ../view/acceuil.php');
-				}
-			}
-			else{
-				echo' nooooooooooooooooooooooooooooooooooooooooooooooooooooooooooon'; //redirection page d'erreur
-			}
-
+					echo' non'; //redirection page d'erreur
+					}
+		}
     }
 }
 
@@ -225,7 +226,9 @@ if(isset($_POST['annonce']))
 					
 					header('Location: ../view/succes.php'); //Redirection vers la page de succès d'enregistrement d'annonce.
 				}			
-		}		
+		}	
+		
+
 }
 
 
@@ -293,9 +296,16 @@ if(isset($_POST['newprice'])) //Si on a cliqué sur le bouton
 
 if(isset($_POST['ajout'])) // Si on a cliqué sur créditer
 {
+	$zero=0;
+	if($_POST['credit'] < $zero)
+	{
+		echo 'Indiquer un chiffre positif';
+	}
+	else{
 	var_dump($_POST['credit']);
 	Membre::addMoney($_POST['credit']); // ajoute des crédits
 	header('Location: ../view/mon_compte.php');
+	}
 }
 
 
@@ -390,10 +400,8 @@ else
 
 	if(isset($_POST['suppcompte']))
 	{
-		echo 'coucou';
 		if(Membre::article() === false)
 		{
-			echo 'test';
 		Membre::deleteMembre();
 		header('Location: ../view/home.php'); 
 		}
@@ -403,18 +411,26 @@ else
 		}
 	}
 
+
 	//Modification du Pseudo
 	
 	if(isset($_POST['modpseudo']))
 	{
-		if(!empty($_POST['newpseudo']))
+		if(is_string($_POST['modpseudo']))
 		{
-			Membre::changePseudo($_POST['newpseudo']);
-			header('Location: ../view/mon_compte.php');
+			if(!empty($_POST['newpseudo']))
+			{
+				Membre::changePseudo($_POST['newpseudo']);
+				header('Location: ../view/mon_compte.php');
+			}
+			else
+			{
+				echo "Le champ pseudo est vide.";
+			}
 		}
 		else
 		{
-			echo "Le champ pseudo est vide.";
+			echo "Il faut rentrer une chaine de caractères";
 		}
 	}
 	
@@ -423,33 +439,35 @@ else
 	
 	if(isset($_POST['modmdp'])) //Vérification qu'on a cliqué sur le boutton
 	{
-
-		if(!empty($_POST['mdpactuel']) && !empty($_POST['newmdp']) && !empty($_POST['newmdp1'])) //Si les champs ne sont pas vides
+		if(is_string($_POST['momdp']))
 		{
-			$rep=Membre::userPass($_POST['mdpactuel']); //appel de la fonction qui permet de vérifier que le mot de passe écrit correspond à celui en bdd
-
-			if($rep === true) //Si c'est vraie
+			if(!empty($_POST['mdpactuel']) && !empty($_POST['newmdp']) && !empty($_POST['newmdp1'])) //Si les champs ne sont pas vides
 			{
+				$rep=Membre::userPass($_POST['mdpactuel']); //appel de la fonction qui permet de vérifier que le mot de passe écrit correspond à celui en bdd
+
+				if($rep === true) //Si c'est vraie
+				{
 			
-					if($_POST['newmdp'] === $_POST['newmdp1']) //et que les deux mdp sont identiques
-					{
+						if($_POST['newmdp'] === $_POST['newmdp1']) //et que les deux mdp sont identiques
+						{
 
-					$newmdp = Membre::changePass($_POST['newmdp']); //function pour changer le mdp en bdd
-					//echo "Le mot de passe à été changé.";
-					header('Location: ../view/succes.php');
-					}
-					else											//Sinon erreur
-					{
-					echo "Les mots de passes ne sont pas identiques.";
-					}
-			}	
-			else
-			{
-			echo"Tous les champs ne sont pas remplies";
+						$newmdp = Membre::changePass($_POST['newmdp']); //function pour changer le mdp en bdd
+						//echo "Le mot de passe à été changé.";
+						header('Location: ../view/succes.php');
+						}
+						else											//Sinon erreur
+						{
+						echo "Les mots de passes ne sont pas identiques.";
+						}
+				}	
+				else
+				{
+					echo"Tous les champs ne sont pas remplies";
+				}
 			}
-			
 		}
-	}	
+	}
+
 
 	
 	// Ajouter catégorie

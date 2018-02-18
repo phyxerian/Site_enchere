@@ -17,7 +17,9 @@ $membre= $bdd->query('SELECT membres_id, pseudo, nom, prenom FROM membres WHERE 
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
-
+<style type="text/css">
+	<?php include('../public/css/css.css'); ?>
+</style>	
     <title>Starter Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->

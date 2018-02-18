@@ -101,4 +101,5 @@ class Categorie{
 		$stmt->execute();
 		$stmt->closeCursor();
 	}
+	
 }

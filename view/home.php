@@ -3,7 +3,7 @@ session_start();
 require '../modele/class/Autoloader.php';
 Autoloader::register();
 Database::getInstance();
-//Demarrage::sessionExist($_SESSION['sessionUserId']);
+Demarrage::sessionExist();
 ?>
 <!DOCTYPE html>
 <html>
@@ -19,7 +19,9 @@ Database::getInstance();
 <meta name="description" content="">
 <meta name="author" content="">
 <link rel="icon" href="../../favicon.ico">
-
+<style type="text/css">
+	<?php include('../public/css/css.css'); ?>
+</style>	
 <title>Starter Template for Bootstrap</title>
 
 <!-- Bootstrap core CSS -->
@@ -36,18 +38,15 @@ Database::getInstance();
     </div>
 </nav>
 
-<div class="container">
-
-    <div class="starter-template" style="padding-top: 100px;">
-
-
+	<div class="container">
+		<div class="starter-template" style="padding-top: 100px;">
     </div>
 
 
 </div><!-- /.container -->
 
 
-<div align="right">
+<div align="right" class="home" >
 
     <h2>Veuillez-vous identifiez</br> </h2>
 

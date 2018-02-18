@@ -21,7 +21,7 @@ class FormAdmin{
 	
 	if($idAdmin === true)
 	{
-	echo "<form action='../controller/connexion.php' method='post'> <input type='submit' name='suppartadmin' value='Supprimer'/> <input type='hidden' value='".$idArticle."' name='idArticle'/> </form>"; 
+	echo "<form action='../controller/connexion.php' method='post'> <input type='submit' class='button-input' name='suppartadmin' value='Supprimer'/> <input type='hidden' value='".$idArticle."' name='idArticle'/> </form>"; 
 	}
 	}
 	
@@ -29,7 +29,7 @@ class FormAdmin{
 	
 		if($idAdmin === true)
 		{
-			echo "<form action='../controller/connexion.php' method='post'> <input type='submit' name='suppmembreadmin' value='Supprimer'/> <input type='hidden' value='".$idMembre."' name='idMembre'/> </form>"; 
+			echo "<form action='../controller/connexion.php' method='post'> <input type='submit' name='suppmembreadmin' class='button-input' value='Supprimer'/> <input type='hidden' value='".$idMembre."' name='idMembre'/> </form>"; 
 		}
 	}
 	

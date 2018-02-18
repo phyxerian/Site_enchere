@@ -87,6 +87,11 @@ function rechercheMembre() {
 	
 	
 <head>	
+
+<style type="text/css">
+	<?php include('../public/css/css.css'); ?>
+</style>	
+
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -158,17 +163,17 @@ function rechercheMembre() {
 		</br><h2> Membres </h2></br>
 		
 		<div> 
-			<input type="text" placeholder="Recherche..." style="width:400px" name="champRechercheMembre" id="champRechercheMembre"onkeyup="rechercheMembre();"value=""/>&nbsp;&nbsp;<input type="button" value="Rechercher" onClick="rechercheMembre();"> 
+			<input type="text" placeholder="Recherche..." style="width:400px" name="champRechercheMembre" id="champRechercheMembre"onkeyup="rechercheMembre();"value=""/>&nbsp;&nbsp;<input class="button-input" type="button" value="Rechercher" onClick="rechercheMembre();"> 
 			<div id="div_contenuRechercheMembre"></div> 
 		</div> 
 		
 		</br><h2> Annonces </h2></br>		
 	
 		<div> 
-			<input type="text" placeholder="Recherche..." style="width:400px" name="champRecherche" id="champRecherche"onkeyup="recherche();"value=""/>&nbsp;&nbsp;<input type="button" value="Rechercher" onClick="recherche();"> 
+			<input type="text" placeholder="Recherche..." style="width:400px" name="champRecherche" id="champRecherche"onkeyup="recherche();"value=""/>&nbsp;&nbsp;<input class="button-input" type="button" value="Rechercher" onClick="recherche();"> 
 			<div id="div_contenuRecherche"></div> 
 		</div> 
-
+		</br></br>
 		</div>	
 
 

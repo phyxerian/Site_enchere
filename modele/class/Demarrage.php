@@ -8,9 +8,9 @@ private $session;
         session_start();
     }
 	
-	public static function sessionExist($session){ //Si la session existe déjà.
+	public static function sessionExist(){ //Si la session existe déjà.
 		
-		if(isset($session))
+		if(isset($_SESSION['sessionUserId']))
 		{
 			header ('Location: ../view/acceuil.php');
 		}

@@ -16,6 +16,11 @@ session_start();
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="icon" href="../../favicon.ico">
+	
+<style type="text/css">
+	<?php include('../public/css/css.css'); ?>
+</style>	
+
     <title> Création d'annonce </title>
 	
 	<!-- Bootstrap core CSS -->
@@ -29,7 +34,8 @@ session_start();
         <div class="navbar-header">
 
             <a class="navbar-brand" href="home.php">Opeth</a>
-			<a class="navbar-brand" href="acceuil.php">Accueil</a>				
+			<a class="navbar-brand" href="acceuil.php">Accueil</a>	
+			<a class="navbar-brand" href="mon_compte.php">Mon compte</a>			
         </div>
     </div>
 </nav>
@@ -41,8 +47,8 @@ session_start();
 
 </div><!-- /.container -->
 
-<h1> Créer une annonce</h1>
-
+<h1 align="center" > Créer une annonce</h1>
+<div class="annonce">
     <form action="../controller/connexion.php" method="post" enctype="multipart/form-data"> <!-- enctype, gère l'upload de fichier -->
         <table> <!--- On utilise le tableau et non le br pour que tous les input soient bien alignés. -->
            <tr>
@@ -84,7 +90,7 @@ session_start();
             </tr>
             <tr>
                 <td>
-                    <label for="cat">Categorie : </label>
+                    <label for="cat">Categorie : </label> <!--mettre en place un foreach -->
                 </td>
                 <td>
 				<select name="choix">
@@ -128,7 +134,7 @@ session_start();
             </tr>
         </table>
     </form>
-
+</div>
 </body>
 </html>
 

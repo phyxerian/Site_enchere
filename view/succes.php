@@ -8,6 +8,11 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="icon" href="../../favicon.ico">
+	
+<style type="text/css">
+	<?php include('../public/css/css.css'); ?>
+</style>
+	
     <title> Succes</title>
 	<!-- Bootstrap core CSS -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
